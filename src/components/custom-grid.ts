@@ -1,22 +1,22 @@
-import State from '../src/state';
-import { Router } from '@vaadin/router';
+import State from "../state";
+import { Router } from "@vaadin/router";
 
 class Grid extends HTMLElement {
-	shadow = this.attachShadow({ mode: 'open' });
+  shadow = this.attachShadow({ mode: "open" });
 
-	constructor() {
-		super();
-	}
+  constructor() {
+    super();
+  }
 
-	async connectedCallback() {
-		this.renderLayout();
-		this.addStyles();
-	}
+  async connectedCallback() {
+    this.renderLayout();
+    this.addStyles();
+  }
 
-	addStyles() {
-		const style = document.createElement('style');
+  addStyles() {
+    const style = document.createElement("style");
 
-		style.innerHTML = `			
+    style.innerHTML = `			
 			* {
 				margin: 0;
 				padding: 0;
@@ -106,14 +106,14 @@ class Grid extends HTMLElement {
 			}
 		`;
 
-		this.shadow.appendChild(style);
-	}
+    this.shadow.appendChild(style);
+  }
 
-	renderLayout() {
-		const data = this.innerHTML
-		const title = this.getAttribute("title")
+  renderLayout() {
+    const data = this.innerHTML;
+    const title = this.getAttribute("title");
 
-		this.shadow.innerHTML = `
+    this.shadow.innerHTML = `
 		<div class=container>
 			<div class=background>${title}</div>
 			<div class=grid>${data}</div>
@@ -121,23 +121,41 @@ class Grid extends HTMLElement {
 		</div>
 		`;
 
-		this.addListeners()
-	}
+    this.addListeners();
+  }
 
-	addListeners() {
-		const mainEl = this.shadow.querySelector('.container') as HTMLElement;
-		const buttonEl = this.shadow.querySelector('.button') as HTMLElement;
+  addListeners() {
+    const mainEl = this.shadow.querySelector(".container") as HTMLElement;
+    const buttonEl = this.shadow.querySelector(".button") as HTMLElement;
 
-		buttonEl.addEventListener('click', () => {
-			const path = this.getAttribute("resource") as any
+    buttonEl.addEventListener("click", () => {
+      const path = this.getAttribute("resource") as any;
 
-			const modal = document.createElement("input-modal");
+      const modal = document.createElement("input-modal");
 
-			modal.setAttribute('resource', path);
+      modal.setAttribute("resource", path);
 
-			mainEl.appendChild(modal)
-		});
-	}
+      mainEl.appendChild(modal);
+    });
+
+    const itemEls = this.shadow.querySelectorAll(".item") as NodeList;
+
+    for (const itemEl of itemEls) {
+      itemEl.addEventListener("click", (e) => {
+        const lastState = State.getState;
+
+        State.setState = { ...lastState, card_selected: e.target };
+        this.changeGrid();
+      });
+    }
+  }
+
+  changeGrid() {
+    const path = this.getAttribute("resource") as any;
+    if (path == State.Routes.categories) {
+      Router.go("/home/products");
+    }
+  }
 }
 
-customElements.define('custom-grid', Grid);
+customElements.define("custom-grid", Grid);

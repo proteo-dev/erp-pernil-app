@@ -1,29 +1,29 @@
-import { Router } from '@vaadin/router';
-import State from './state';
+import { Router } from "@vaadin/router";
+import State from "./state";
 
 // ROUTER
 
-import './router/router';
+import "./router/router";
 
 // COMPONENTS
 
-import '../components/layout';
-import '../components/products';
-import '../components/categories';
-import '../components/custom-grid';
-import '../components/modal';
-import '../components/form';
+import "./components/layout";
+import "./components/products";
+import "./components/categories";
+import "./components/custom-grid";
+import "./components/modal";
+import "./components/form";
 
 // PAGES
 
-import './pages/login';
-import './pages/home';
+import "./pages/login";
+import "./pages/home";
 
 (async function main() {
-	await State.init();
+  await State.init();
 
-	window.addEventListener('load', () => {
-		const currentURL = location.pathname;
-		if (currentURL === '/') return Router.go('/');
-	});
+  window.addEventListener("load", () => {
+    const currentURL = location.pathname;
+    if (currentURL === "/") return Router.go("/");
+  });
 })();

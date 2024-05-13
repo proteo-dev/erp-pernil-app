@@ -1,22 +1,22 @@
-import { Router } from '@vaadin/router';
-import State from '../src/state';
+import { Router } from "@vaadin/router";
+import State from "../state";
 
 class InputModal extends HTMLElement {
-	shadow = this.attachShadow({ mode: 'open' });
+  shadow = this.attachShadow({ mode: "open" });
 
-	constructor() {
-		super();
-	}
+  constructor() {
+    super();
+  }
 
-	connectedCallback() {
-		this.render();
-		this.addStyles();
-	}
+  connectedCallback() {
+    this.render();
+    this.addStyles();
+  }
 
-	addStyles() {
-		const style = document.createElement('style');
+  addStyles() {
+    const style = document.createElement("style");
 
-		style.innerHTML = `
+    style.innerHTML = `
 			* {
 				margin: 0;
 				padding: 0;
@@ -104,11 +104,11 @@ class InputModal extends HTMLElement {
 			}
 		`;
 
-		this.shadow.appendChild(style);
-	}
+    this.shadow.appendChild(style);
+  }
 
-	render() {
-		this.shadow.innerHTML = `
+  render() {
+    this.shadow.innerHTML = `
 		<form class="form">
 			<div class=titleContainer>
 			<h3 class=title> NUEVO </h3>
@@ -120,20 +120,20 @@ class InputModal extends HTMLElement {
 		</form>
 		`;
 
-		this.addListeners()
-	}
+    this.addListeners();
+  }
 
-	addListeners() {
-		const formEl = this.shadow.querySelector('.form') as HTMLElement;
+  addListeners() {
+    const formEl = this.shadow.querySelector(".form") as HTMLElement;
 
-		formEl.addEventListener("submit", () => {
-			const inputEl = this.shadow.querySelector('.input') as any;
+    formEl.addEventListener("submit", () => {
+      const inputEl = this.shadow.querySelector(".input") as any;
 
-			const path = this.getAttribute('resource');
+      const path = this.getAttribute("resource");
 
-			State.fetchData({ path, method: "POST", body: { name: inputEl.value } })
-		})
-	}
+      State.fetchData({ path, method: "POST", body: { name: inputEl.value } });
+    });
+  }
 }
 
-customElements.define('input-modal', InputModal);
+customElements.define("input-modal", InputModal);
