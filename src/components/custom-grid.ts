@@ -30,7 +30,7 @@ class Grid extends HTMLElement {
 				display: flex;
 				flex-direction: column;
 				justify-content: space-between;
-				row-gap: 73px;
+				row-gap: 20px;
 
 				background-color: rgba(255, 255, 255, 0.207);
 				border: 2px solid white;
@@ -48,7 +48,7 @@ class Grid extends HTMLElement {
 						
 			.grid {
 				padding: 0 10%;
-				height: 330px;
+				height: 260px;
 
 				display: grid;
 				grid-template-columns: repeat(3, 1fr);
@@ -110,8 +110,8 @@ class Grid extends HTMLElement {
   }
 
   renderLayout() {
-    const data = this.innerHTML;
     const title = this.getAttribute("title");
+    const data = this.getAttribute("data");
 
     this.shadow.innerHTML = `
 		<div class=container>
@@ -130,10 +130,14 @@ class Grid extends HTMLElement {
 
     buttonEl.addEventListener("click", () => {
       const path = this.getAttribute("resource") as any;
+      let modal;
 
-      const modal = document.createElement("input-modal");
-
-      modal.setAttribute("resource", path);
+      if (path == State.Routes.products)
+        modal = document.createElement("product-modal");
+      else {
+        modal = document.createElement("input-modal");
+        modal.setAttribute("resource", path);
+      }
 
       mainEl.appendChild(modal);
     });
@@ -153,6 +157,8 @@ class Grid extends HTMLElement {
   changeGrid() {
     const path = this.getAttribute("resource") as any;
     if (path == State.Routes.categories) {
+      Router.go("/home/subcategories");
+    } else if (path == State.Routes.subcategories) {
       Router.go("/home/products");
     }
   }

@@ -1,7 +1,6 @@
 import State from "../state";
-import { Router } from "@vaadin/router";
 
-class Products extends HTMLElement {
+class Subcategories extends HTMLElement {
   shadow = this.attachShadow({ mode: "open" });
 
   constructor() {
@@ -42,35 +41,38 @@ class Products extends HTMLElement {
   }
 
   async getDataFromDB() {
-    const currentState = State.getState || [];
+    const ls = State.getState || [];
 
-    const products = await State.fetchData({
-      path: State.Routes.products,
-      query: `SubcategoryId=${currentState.card_selected.id}`,
+    const subcategories = await State.fetchData({
+      path: State.Routes.subcategories,
+      query: `CategoryId=${ls.card_selected.id}`,
     });
 
-    State.setState = { ...currentState, products: products.data };
+    State.setState = { ...ls, subCategories: subcategories.data };
 
-    return this.parseFetchedData(products.data);
+    return this.parseFetchedData(subcategories.data);
   }
 
   parseFetchedData(fetchedData) {
     const data = fetchedData
-      .map((product) => `<div class=item>${product.name}</div>`)
+      .map(
+        (subcategory) =>
+          `<div id=${subcategory.id} class=item>${subcategory.name}</div>`
+      )
       .join(" ");
 
     return data;
   }
 
   async renderLayout() {
-    const products = await this.getDataFromDB();
+    const subcategories = await this.getDataFromDB();
 
     this.shadow.innerHTML = `
 			<section class="main">
-				<custom-grid data="${products}" resource=${State.Routes.products} title=Productos>${products}</custom-grid>
+				<custom-grid data="${subcategories}" resource=${State.Routes.subcategories} title=Sub-Categorias></custom-grid>
 			</section>
 		`;
   }
 }
 
-customElements.define("products-board", Products);
+customElements.define("subcategories-board", Subcategories);

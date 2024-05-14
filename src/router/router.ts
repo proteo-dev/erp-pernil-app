@@ -9,6 +9,7 @@ router.setRoutes([
     component: "home-page",
     children: [
       { path: "/", component: "categories-board" },
+      { path: "/subcategories", component: "subcategories-board" },
       { path: "/products", component: "products-board" },
       { path: "/products/:category", component: "custom-product" },
       {

@@ -5,6 +5,7 @@ abstract class State {
     card_selected: HTMLElement;
     products: [];
     categories: [];
+    subCategories: [];
   };
   private static _listeners: Function[] = [];
   private static _apiBaseUrl: string = `${DB_HOST}${API_VERSION}/`;
@@ -18,6 +19,7 @@ abstract class State {
     combos: "combos",
     movements: "movements",
     categories: "categories",
+    subcategories: "subcategories",
   };
 
   static async init() {

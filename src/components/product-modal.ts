@@ -1,7 +1,7 @@
 import { Router } from "@vaadin/router";
 import State from "../state";
 
-class InputModal extends HTMLElement {
+class ProductModal extends HTMLElement {
   shadow = this.attachShadow({ mode: "open" });
 
   constructor() {
@@ -25,10 +25,10 @@ class InputModal extends HTMLElement {
 			
 			form {
 				position: absolute;
-				bottom: 20%;
-				top: 20%;
-				right: 30%;
-				left: 30%;
+				bottom: 5%;
+				top: 5%;
+				right: 7.5%;
+				left: 7.5%;
 
 				font-weight: bolder;
 				background-color: rgba(255, 255, 255);
@@ -42,27 +42,28 @@ class InputModal extends HTMLElement {
 			}
 
 			form .input {
-				height: 61px;
 				background-color: rgba(161, 161, 161, 0.39);
+				height: 50px;
+				border: none;
+				border-radius: 15px;
 
 				position: absolute;
-				bottom: calc(50% - 25px);
+				bottom: 58%;
 				left: 70px;
 				right: 70px;
-				
-				border: none;
 				
 				color: white;
 				font-size: 24px;
 				text-align: center;
-				border-radius: 15px;
 			}
 
 			form .input::placeholder {
+				color: white;
 				color: rgba(161, 161, 161, 0.39);
 			}
 
 			form .input:focus {
+				color: white;
 				background-color: rgba(161, 161, 161, 0.39);
 			}
 
@@ -102,6 +103,40 @@ class InputModal extends HTMLElement {
 				background-color: rgb(161, 161, 161);
 				color: white;
 			}
+
+			form .checkboxes {
+				background-color: rgba(161, 161, 161, 0.39);
+				width: 90%;
+				height: 11dvh;
+				border-radius: 15px;
+				
+				position: absolute;
+				bottom: 27%;
+				left: 5%;
+				display: flex;
+				justify-content: space-around;
+				align-items: center;
+				margin-top: 15px;
+			}
+
+			form .checkboxes div {
+				display: flex;
+				flex-grow: 1;
+				justify-content: center;
+				align-items: center;
+			}
+
+			form .checkboxes div input {
+				width: 27px;
+				height: 27px;
+				margin-left: 9px;
+				accent-color: yellowgreen;
+			}
+
+			form .checkboxes div label {
+				font-size: 24px;
+				color: white;
+			}
 		`;
 
     this.shadow.appendChild(style);
@@ -111,10 +146,27 @@ class InputModal extends HTMLElement {
     this.shadow.innerHTML = `
 		<form class="form">
 			<div class=titleContainer>
-			<h3 class=title> NUEVO </h3>
+				<h3 class=title> NUEVO </h3>
 			</div>
 			
 			<input type=text placeholder=Nombre required class=input />
+
+			<div class=checkboxes>					
+				<div>
+					<label for="serviceCheck">Servicio</label>
+					<input type=checkbox name=serviceCheck class=checkbox />
+				</div>
+				
+				<div>
+					<label for="buyCheck">Compra</label>
+					<input type=checkbox name=buyCheck class=checkbox />
+				</div>
+				
+				<div>
+					<label for="sellCheck">Venta</label>
+					<input type=checkbox name=sellCheck class=checkbox />
+				</div>
+			</div>
 			
 			<input type=submit value=OK class=button />
 		</form>
@@ -145,4 +197,4 @@ class InputModal extends HTMLElement {
   }
 }
 
-customElements.define("input-modal", InputModal);
+customElements.define("product-modal", ProductModal);

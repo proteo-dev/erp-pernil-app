@@ -66,7 +66,7 @@ class Categories extends HTMLElement {
 
     this.shadow.innerHTML = `
 			<section class="main">
-				<custom-grid resource=${State.Routes.categories} title=Categories>${categories}</custom-grid>
+				<custom-grid data="${categories}" resource=${State.Routes.categories} title=Categorias></custom-grid>
 			</section>
 		`;
   }
