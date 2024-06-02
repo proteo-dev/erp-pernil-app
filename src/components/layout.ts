@@ -1,4 +1,4 @@
-import State from '../src/state';
+import State from '../state';
 import { Router } from '@vaadin/router';
 
 class Layout extends HTMLElement {
@@ -71,8 +71,8 @@ class Layout extends HTMLElement {
 				<div class="logo">DASHBOARD</div>
 
 				<ul>
-					<li>Compras</li>
 					<li>Ventas</li>
+					<li>Compras</li>
 				</ul>
 			</navbar>
 		`;
@@ -84,11 +84,11 @@ class Layout extends HTMLElement {
 
 		const goToPage = (data: any) => {
 			const page = data.target.innerHTML.toLowerCase().trim();
-			Router.go(`/home/${page}`);
+			Router.go(`/${page}`);
 		};
 
 		items.forEach((e) => e.addEventListener('click', goToPage));
-		logoEl.addEventListener('click', () => Router.go('/home'));
+		logoEl.addEventListener('click', () => Router.go('/'));
 	}
 }
 

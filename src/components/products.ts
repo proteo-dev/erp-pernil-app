@@ -42,21 +42,27 @@ class Products extends HTMLElement {
   }
 
   async getDataFromDB() {
-    const currentState = State.getState || [];
+    const ls = State.getState || [];
 
-    const products = await State.fetchData({
+    const [products, status] = await State.fetchData({
       path: State.Routes.products,
-      query: `SubcategoryId=${currentState.card_selected.id}`,
+      query: `SubcategoryId=${ls.card_selected.id}`,
     });
 
-    State.setState = { ...currentState, products: products.data };
+    if (status == 200) {
+      State.setState = { ...ls, products: products.data };
 
-    return this.parseFetchedData(products.data);
+      return this.parseFetchedData(products.data);
+    } else {
+      // configurar error
+    }
   }
 
   parseFetchedData(fetchedData) {
     const data = fetchedData
-      .map((product) => `<div class=item>${product.name}</div>`)
+      .map(
+        (product) => `<div id=${product.id} class=item>${product.name}</div>`
+      )
       .join(" ");
 
     return data;
@@ -67,7 +73,7 @@ class Products extends HTMLElement {
 
     this.shadow.innerHTML = `
 			<section class="main">
-				<custom-grid data="${products}" resource=${State.Routes.products} title=Productos>${products}</custom-grid>
+				<custom-grid data="${products}" resource=${State.Routes.products} title=Productos></custom-grid>
 			</section>
 		`;
   }

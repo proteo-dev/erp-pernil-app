@@ -15,6 +15,7 @@ import "./components/custom-grid";
 import "./components/modal";
 import "./components/product-modal";
 import "./components/form";
+import "./components/accounting-board";
 
 // PAGES
 
@@ -26,7 +27,7 @@ import "./pages/home";
 
   window.addEventListener("load", () => {
     const currentURL = location.pathname;
-    if (currentURL === "/") Router.go("/");
-    else Router.go("/home");
+    // if (currentURL === "/") Router.go("/login");
+    Router.go("/");
   });
 })();

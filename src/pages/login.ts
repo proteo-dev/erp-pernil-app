@@ -38,7 +38,7 @@ class LoginPage extends HTMLElement {
 
 			// Lógica de login.
 
-			Router.go('/home');
+			Router.go('/');
 		});
 	}
 }

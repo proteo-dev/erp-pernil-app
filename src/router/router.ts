@@ -3,20 +3,16 @@ import { Router } from "@vaadin/router";
 const router = new Router(document.querySelector(".root"));
 
 router.setRoutes([
-  { path: "/", component: "login-page" },
+  { path: "/login", component: "login-page" },
   {
-    path: "/home",
+    path: "/",
     component: "home-page",
     children: [
       { path: "/", component: "categories-board" },
-      { path: "/subcategories", component: "subcategories-board" },
-      { path: "/products", component: "products-board" },
-      { path: "/products/:category", component: "custom-product" },
-      {
-        path: "/products/:category/:product",
-        component: "product-overview",
-      },
-      { path: "/crear", component: "custom-form" },
+      { path: "/subcategorias", component: "subcategories-board" },
+      { path: "/productos", component: "products-board" },
+      { path: "/ventas", component: "accounting-board" },
+      { path: "/compras", component: "accounting-board" },
     ],
   },
 ]);

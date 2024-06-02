@@ -46,7 +46,7 @@ abstract class State {
     State._executeListeners();
   }
 
-  static async fetchData({ path, method = "GET", body = {}, query = "" }) {
+  static async fetchData({ path, method = "GET", body = {}, query = "" }): Promise<[any, status: number]> {
     const queryString = new URLSearchParams(query).toString();
 
     const URL = this._apiBaseUrl + path + "?" + queryString;
@@ -61,9 +61,11 @@ abstract class State {
     if (Object.values(body)[0] !== undefined)
       options.body = JSON.stringify(body);
 
-    const data = await fetch(URL, options);
+    const response = await fetch(URL, options);
+    const data = await response.json();
 
-    return data.json();
+
+    return [data, response.status];
   }
 }
 

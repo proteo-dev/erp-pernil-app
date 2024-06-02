@@ -2,21 +2,21 @@ import { Router } from "@vaadin/router";
 import State from "../state";
 
 class ProductModal extends HTMLElement {
-  shadow = this.attachShadow({ mode: "open" });
+	shadow = this.attachShadow({ mode: "open" });
 
-  constructor() {
-    super();
-  }
+	constructor() {
+		super();
+	}
 
-  connectedCallback() {
-    this.render();
-    this.addStyles();
-  }
+	connectedCallback() {
+		this.render();
+		this.addStyles();
+	}
 
-  addStyles() {
-    const style = document.createElement("style");
+	addStyles() {
+		const style = document.createElement("style");
 
-    style.innerHTML = `
+		style.innerHTML = `
 			* {
 				margin: 0;
 				padding: 0;
@@ -24,16 +24,18 @@ class ProductModal extends HTMLElement {
 			}
 			
 			form {
+				display: flex;
 				position: absolute;
 				bottom: 5%;
 				top: 5%;
 				right: 7.5%;
 				left: 7.5%;
-
 				font-weight: bolder;
 				background-color: rgba(255, 255, 255);
 				border-radius: 27px;
 				border: 3px solid rgb(161, 161, 161);
+				flex-direction: column;
+				justify-content: space-between;
 			}
 
 			form .title {
@@ -43,27 +45,22 @@ class ProductModal extends HTMLElement {
 
 			form .input {
 				background-color: rgba(161, 161, 161, 0.39);
-				height: 50px;
 				border: none;
 				border-radius: 15px;
-
-				position: absolute;
-				bottom: 58%;
-				left: 70px;
-				right: 70px;
 				
-				color: white;
+				width: 100%;
+				height: 15%;
+				
+				color: black;
 				font-size: 24px;
 				text-align: center;
 			}
 
 			form .input::placeholder {
-				color: white;
 				color: rgba(161, 161, 161, 0.39);
 			}
 
 			form .input:focus {
-				color: white;
 				background-color: rgba(161, 161, 161, 0.39);
 			}
 
@@ -78,25 +75,27 @@ class ProductModal extends HTMLElement {
 
 				font-size: 21px;
 				font-weight: bolder;
-				color: white;
+				color: black;
 			}
 
 			form .button {
-				position: absolute;
-				bottom: -2px;
-				right: -2px;
+				background-color: white;
+				border: none;
+				border: 2px solid rgb(161, 161, 161);
+				border-radius: 27px 0 27px 0;
+
 				width: 18vw;
 
-				background-color: white;
+				display: flex;
+				align-self: flex-end;
+				
 				font-size: 54px;
 				font-weight: bolder;
 				color: rgb(161, 161, 161);
 				text-align: center;
-
-				border: none;
-				border: 2px solid rgb(161, 161, 161);
-				border-radius: 27px 0 27px 0;
+				
 				cursor: pointer;
+			}
 			}
 
 			form .button:hover {
@@ -106,95 +105,168 @@ class ProductModal extends HTMLElement {
 
 			form .checkboxes {
 				background-color: rgba(161, 161, 161, 0.39);
-				width: 90%;
-				height: 11dvh;
+				width: 100%;
+				height: 52%;
 				border-radius: 15px;
-				
-				position: absolute;
-				bottom: 27%;
-				left: 5%;
 				display: flex;
 				justify-content: space-around;
 				align-items: center;
-				margin-top: 15px;
 			}
 
-			form .checkboxes div {
+			.fields-container {
+				width: 150px;
 				display: flex;
-				flex-grow: 1;
+				flex-direction: column;
 				justify-content: center;
 				align-items: center;
 			}
+			
+			.fields-container div {
+				width: 100%;
+				display: flex;
+				column-gap: 10px;
+				justify-content: space-between;
+				align-items: center;
+			}
 
-			form .checkboxes div input {
-				width: 27px;
-				height: 27px;
-				margin-left: 9px;
-				accent-color: yellowgreen;
+			.checkbox, .radioBox {
+				width: 23px;
+				height: 23px;
+			}
+
+			.radioBox:checked {
+				border-color: #007bff;
 			}
 
 			form .checkboxes div label {
 				font-size: 24px;
-				color: white;
+				color: black;
 			}
 		`;
 
-    this.shadow.appendChild(style);
-  }
+		this.shadow.appendChild(style);
+	}
 
-  render() {
-    this.shadow.innerHTML = `
+	render() {
+		this.shadow.innerHTML = `
 		<form class="form">
-			<div class=titleContainer>
-				<h3 class=title> NUEVO </h3>
-			</div>
-			
-			<input type=text placeholder=Nombre required class=input />
+			<input id=inputName type=text placeholder=Nombre required class=input />
 
 			<div class=checkboxes>					
-				<div>
-					<label for="serviceCheck">Servicio</label>
-					<input type=checkbox name=serviceCheck class=checkbox />
+				<div class="fields-container">
+					<div>
+						<label>Servicio</label>
+						<input id=inputService type=radio name=productType class=radioBox />
+					</div>
+					
+					<div>
+						<label>Producto</label>
+						<input id=inputProduct type=radio name=productType class=radioBox checked />
+					</div>
 				</div>
 				
-				<div>
-					<label for="buyCheck">Compra</label>
-					<input type=checkbox name=buyCheck class=checkbox />
+				
+				<div class="fields-container">
+					<div>
+						<label for="buyCheck">Compra</label>
+						<input id=inputBuy type=checkbox name=buyCheck class=checkbox checked />
+					</div>
+					
+					<div>
+						<label for="sellCheck">Venta</label>
+						<input id=inputSell type=checkbox name=sellCheck class=checkbox checked />
+					</div>
 				</div>
 				
-				<div>
-					<label for="sellCheck">Venta</label>
-					<input type=checkbox name=sellCheck class=checkbox />
+				<div class="fields-container">
+					<input id=inputStock type=number placeholder=Stock required class=input />
+				</div>
+				
+				<div class="fields-container">
+					<label for="inactiveCheck">Inactivo</label>
+					<input id=inputInactive type=checkbox name=inactiveCheck class=checkbox />
 				</div>
 			</div>
 			
-			<input type=submit value=OK class=button />
+			<input type=submit class=button />
 		</form>
 		`;
 
-    this.addListeners();
-  }
+		this.addListeners();
+	}
 
-  addListeners() {
-    const formEl = this.shadow.querySelector(".form") as HTMLElement;
+	async addListeners() {
+		const ls = State.getState;
 
-    formEl.addEventListener("submit", () => {
-      const inputEl = this.shadow.querySelector(".input") as any;
+		const formEl = this.shadow.querySelector(".form") as HTMLElement;
 
-      const path = this.getAttribute("resource");
+		const inputNameEl = this.shadow.querySelector("#inputName") as HTMLInputElement;
+		const inputProductEl = this.shadow.querySelector("#inputProduct") as any;
+		const inputServiceEl = this.shadow.querySelector("#inputService") as any;
+		const inputBuyEl = this.shadow.querySelector("#inputBuy") as any;
+		const inputSellEl = this.shadow.querySelector("#inputSell") as any;
+		const inputInactiveEl = this.shadow.querySelector("#inputInactive") as any;
+		const inputStockEl = this.shadow.querySelector("#inputStock") as HTMLInputElement;
 
-      const body: any = { name: inputEl.value };
+		const name = inputNameEl.value;
+		const isProduct = inputProductEl.value;
+		const isService = inputServiceEl.value;
+		const buy = inputBuyEl.value;
+		const sell = inputSellEl.value;
+		const stock = inputStockEl.value;
+		const inactive = inputInactiveEl.value;
 
-      if (path == State.Routes.subcategories) {
-        const ls = State.getState;
-        const CategoryId = ls.card_selected.id;
+		const action = this.getAttribute("action");
 
-        body.CategoryId = CategoryId;
-      }
+		switch (action) {
+			case "get":
+				const [product, status] = await State.fetchData({ path: `${State.Routes.products}/${ls.card_selected.id}`, method: "get" });
 
-      State.fetchData({ path, method: "POST", body });
-    });
-  }
+				if (status == 200) {
+					const { name, isProduct, isService, buy, sell, inactive, stock } = product.data
+
+					inputNameEl.value = name;
+					inputStockEl.value = stock;
+
+					inputProductEl.checked = isProduct;
+					inputServiceEl.checked = isService;
+					inputBuyEl.checked = buy;
+					inputSellEl.checked = sell;
+					inputInactiveEl.checked = inactive;
+				}
+
+				// const body: any = {
+				// 	name,
+				// 	stock,
+				// 	isProduct,
+				// 	isService,
+				// 	buy,
+				// 	sell,
+				// 	inactive,
+				// 	SubcategoryId: ls.card_selected.id,
+				// };
+
+				// State.fetchData({ path: State.Routes.products, method: "update", body });
+				break;
+
+			default:
+				formEl.addEventListener("submit", () => {
+					const body: any = {
+						name,
+						stock,
+						isProduct,
+						isService,
+						buy,
+						sell,
+						inactive,
+						SubcategoryId: ls.card_selected.id,
+					};
+
+					State.fetchData({ path: State.Routes.products, method: "post", body });
+				});
+				break;
+		}
+	}
 }
 
 customElements.define("product-modal", ProductModal);

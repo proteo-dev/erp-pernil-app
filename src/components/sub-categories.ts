@@ -43,14 +43,18 @@ class Subcategories extends HTMLElement {
   async getDataFromDB() {
     const ls = State.getState || [];
 
-    const subcategories = await State.fetchData({
+    const [subcategories, status] = await State.fetchData({
       path: State.Routes.subcategories,
       query: `CategoryId=${ls.card_selected.id}`,
     });
 
-    State.setState = { ...ls, subCategories: subcategories.data };
+    if (status == 200) {
+      State.setState = { ...ls, subCategories: subcategories.data };
 
-    return this.parseFetchedData(subcategories.data);
+      return this.parseFetchedData(subcategories.data);
+    } else {
+      // configurar error
+    }
   }
 
   parseFetchedData(fetchedData) {

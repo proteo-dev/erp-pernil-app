@@ -41,16 +41,6 @@ class Categories extends HTMLElement {
     this.shadow.appendChild(style);
   }
 
-  async getDataFromDB() {
-    const categories = await State.fetchData({ path: State.Routes.categories });
-
-    const currentState = State.getState || [];
-
-    State.setState = { ...currentState, categories: categories.data };
-
-    return this.parseFetchedData(categories.data);
-  }
-
   parseFetchedData(fetchedData) {
     const data = fetchedData
       .map(
@@ -59,6 +49,16 @@ class Categories extends HTMLElement {
       .join(" ");
 
     return data;
+  }
+
+  async getDataFromDB() {
+    const [categories] = await State.fetchData({ path: State.Routes.categories });
+
+    const currentState = State.getState || [];
+
+    State.setState = { ...currentState, categories: categories.data };
+
+    return this.parseFetchedData(categories.data);
   }
 
   async renderLayout() {
