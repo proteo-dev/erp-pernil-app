@@ -14,6 +14,7 @@ import "./components/sub-categories";
 import "./components/custom-grid";
 import "./components/modal";
 import "./components/product-modal";
+import "./components/movement-modal";
 import "./components/form";
 import "./components/accounting-board";
 

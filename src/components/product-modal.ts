@@ -82,7 +82,7 @@ class ProductModal extends HTMLElement {
 				background-color: white;
 				border: none;
 				border: 2px solid rgb(161, 161, 161);
-				border-radius: 27px 0 27px 0;
+				border-radius: 27px 0 22px 0;
 
 				width: 18vw;
 

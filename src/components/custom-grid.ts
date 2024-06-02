@@ -48,7 +48,7 @@ class Grid extends HTMLElement {
 						
 			.grid {
 				padding: 0 10%;
-				height: 260px;
+				height: 30vh;
 
 				display: grid;
 				grid-template-columns: repeat(3, 1fr);

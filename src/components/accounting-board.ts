@@ -1,21 +1,22 @@
 import State from "../state";
 
 class accountingBoard extends HTMLElement {
-    shadow = this.attachShadow({ mode: "open" });
+	shadow = this.attachShadow({ mode: "open" });
+	path
 
-    constructor() {
-        super();
-    }
+	constructor() {
+		super();
+	}
 
-    async connectedCallback() {
-        await this.renderLayout();
-        await this.addStyles();
-    }
+	async connectedCallback() {
+		await this.renderLayout();
+		await this.addStyles();
+	}
 
-    async addStyles() {
-        const style = document.createElement("style");
+	async addStyles() {
+		const style = document.createElement("style");
 
-        style.innerHTML = `			
+		style.innerHTML = `			
 			* {
 				margin: 0;
 				padding: 0;
@@ -46,10 +47,11 @@ class accountingBoard extends HTMLElement {
 			}
 
             .table-container {
+				min-height: 30vh;
                 width: 100%;
                 display: flex;
-                background-color: white;
                 flex-direction: column;
+				overflow-y: auto;
             }
             
             table {
@@ -98,33 +100,33 @@ class accountingBoard extends HTMLElement {
 			}
 		`;
 
-        this.shadow.appendChild(style);
-    }
+		this.shadow.appendChild(style);
+	}
 
-    async getDbData() {
-        const ubi = location.pathname.replace("/", "")
-        const operation = ubi == "ventas" ? "venta" : "compra"
+	async getDbData() {
+		const ubi = location.pathname.replace("/", "")
+		const operation = ubi == "ventas" ? "venta" : "compra"
 
-        const [movements, status] = await State.fetchData({
-            path: State.Routes.movements,
-            query: `operation=${operation}`
-        })
+		const [movements, status] = await State.fetchData({
+			path: State.Routes.movements,
+			query: `operation=${operation}`
+		})
 
-        if (status != 200) ""
+		if (status != 200) ""
 
-        return movements.data
-    }
+		return movements.data
+	}
 
-    async renderLayout() {
-        const path = location.pathname.replace("/", "")
-        const capitalizedText = path[0].toUpperCase() + path.slice(1)
+	async renderLayout() {
+		this.path = location.pathname.replace("/", "")
+		const capitalizedText = this.path[0].toUpperCase() + this.path.slice(1)
 
-        const movements = await this.getDbData()
+		const movements = await this.getDbData()
 
-        this.shadow.innerHTML = `
+		this.shadow.innerHTML = `
 		<div class=container>
 			<div class=background>${capitalizedText}</div>
- 				<div className='table-container'>
+ 				<div class='table-container'>
  					<table>
  						<thead>
  							<tr>
@@ -132,14 +134,14 @@ class accountingBoard extends HTMLElement {
  								<th>Monto</th>
  								<th>Unidades</th>
  								<th>Usuario</th>
- 								<th>${path == "ventas" ? "Cliente" : "Proveedor"}</th>
+ 								<th>${this.path == "ventas" ? "Cliente" : "Proveedor"}</th>
  								<th>Fecha</th>
  							</tr>
  						</thead>
  						<tbody>
  						${movements.map((el: any) => `<tr>
                             <td>${el.id}</td>
-                            <td>${el.amount}</td>
+                            <td>$ ${el.amount}</td>
                             <td>${el.units}</td>
                             <td>${el.User.fullName}</td>
                             <td>${el.Client?.name || el.Supplier?.name}</td>
@@ -152,11 +154,21 @@ class accountingBoard extends HTMLElement {
 		</div>
 		`;
 
-        this.addListeners();
-    }
+		this.addListeners();
+	}
 
-    addListeners() {
-    }
+	addListeners() {
+		const mainEl = this.shadow.querySelector(".container") as HTMLElement;
+		const buttonEl = this.shadow.querySelector(".button") as HTMLElement;
+
+		buttonEl.addEventListener("click", () => {
+			const modal = document.createElement("movement-modal");
+
+			modal.setAttribute("operation", this.path);
+
+			mainEl.appendChild(modal);
+		})
+	}
 }
 
 customElements.define("accounting-board", accountingBoard);
