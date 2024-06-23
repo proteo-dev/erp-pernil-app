@@ -1,4 +1,5 @@
 import State from "../state";
+import searchModal from "./search-modal"
 
 class MovementModal extends HTMLElement {
 	shadow = this.attachShadow({ mode: "open" });
@@ -121,9 +122,12 @@ class MovementModal extends HTMLElement {
 				<div class="fields-container">
 					<div>
 						<input id=inputProduct name=product type=number placeholder=Producto required class=input />
+						<button id="productsButton" >Ver</button>
 					</div>
+
 					<div>
 						<input id=inputEntity name=entity type=number placeholder=${entity} required class=input />
+						<button id="buttonEntity" >Ver</button>
 					</div>
 				</div>
 				
@@ -131,11 +135,13 @@ class MovementModal extends HTMLElement {
 					<div>
 						<input id=inputAmount name=amount type=number placeholder=Monto class=input />
 					</div>
+	
 					<div>
 						<input id=inputUnits name=units type=number placeholder=Unidades required class=input />
 					</div>
 				</div>
 			</div>
+			<searchModal />
 			
 			<input type=submit class=button />
 		</form>
@@ -152,7 +158,7 @@ class MovementModal extends HTMLElement {
 		if (this.isSalesOperation) inputAmountEl.style.display = "none"
 	}
 
-	async addListeners() {
+	async formListener() {
 		const formEl = this.shadow.querySelector(".form") as HTMLElement;
 
 		const inputProductEl = this.shadow.querySelector("#inputProduct") as HTMLInputElement;
@@ -179,6 +185,22 @@ class MovementModal extends HTMLElement {
 
 			State.fetchData({ path: State.Routes.movements, method: "post", body });
 		});
+	}
+
+	async buttonsListener() {
+		const formEl = this.shadow.querySelector(".form") as HTMLElement;
+		const productsButtonEl = this.shadow.querySelector("#productsButton") as HTMLElement;
+		const entityButtonEl = this.shadow.querySelector("#entityButton") as HTMLElement;
+
+		productsButtonEl.addEventListener("click", () => {
+			const searchModalEl = document.createElement("search-modal")
+			formEl.appendChild(searchModalEl)
+		});
+	}
+
+	async addListeners() {
+		this.formListener()
+		this.buttonsListener()
 	}
 }
 

@@ -24,21 +24,26 @@ body {
 	background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
 }
 
-.root {
+#root {
 	width: 100vw;
 	height: 100vh;
 	padding: 0 9%;
+
+	display: flex;
+	flex-direction: column;
+	row-gap: 50px;
 }
 
-login-page {
+
+/* LOGIN PAGE */
+
+LoginPage {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	width: 100%;
 	height: 100vh;
 }
-
-/* LOGIN PAGE */
 
 .login__container {
 	width: clamp(351px, 50vw, 720px);
@@ -96,7 +101,7 @@ login-page {
 
 /* HOME PAGE */
 
-home-page {
+HomePage {
     height: 100vh;
     padding: 30px 0;
     
@@ -105,13 +110,13 @@ home-page {
 	gap: 80px;
 }
 
-home-page main-layout {
+HomePage MainLayout {
 	height: 100px;
 }
 
-home-page main-board,
-categories-board,
-custom-form,
-custom-grid {
+HomePage MainBoard,
+CategoriesBoard,
+CustomForm,
+CustomGrid {
 	height: 100%;
 }

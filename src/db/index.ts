@@ -1,5 +1,7 @@
-const DB_HOST = 'http://localhost:8080';
+const PORT = 8080
 
-const API_VERSION = '/v1/api';
+const DB_HOST = `http://localhost:${PORT}`;
+
+const API_VERSION = 'v1';
 
 export { DB_HOST, API_VERSION };
