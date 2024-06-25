@@ -1,272 +1,199 @@
-import { Router } from "@vaadin/router";
-import State from "../state";
+// <form class="form">
+// 	<input id=inputName type=text placeholder=Nombre required class=input />
 
-class ProductModal extends HTMLElement {
-	shadow = this.attachShadow({ mode: "open" });
+// 	<div class=checkboxes>
+// 		<div class="fields-container">
+// 			<div>
+// 				<label>Servicio</label>
+// 				<input id=inputService type=radio name=productType class=radioBox />
+// 			</div>
 
-	constructor() {
-		super();
-	}
+// 			<div>
+// 				<label>Producto</label>
+// 				<input id=inputProduct type=radio name=productType class=radioBox checked />
+// 			</div>
+// 		</div>
 
-	connectedCallback() {
-		this.render();
-		this.addStyles();
-	}
+// 		<div class="fields-container">
+// 			<div>
+// 				<label for="buyCheck">Compra</label>
+// 				<input id=inputBuy type=checkbox name=buyCheck class=checkbox checked />
+// 			</div>
 
-	addStyles() {
-		const style = document.createElement("style");
+// 			<div>
+// 				<label for="sellCheck">Venta</label>
+// 				<input id=inputSell type=checkbox name=sellCheck class=checkbox checked />
+// 			</div>
+// 		</div>
 
-		style.innerHTML = `
-			* {
-				margin: 0;
-				padding: 0;
-				box-sizing: border-box;
-			}
-			
-			form {
-				display: flex;
-				position: absolute;
-				bottom: 5%;
-				top: 5%;
-				right: 7.5%;
-				left: 7.5%;
-				font-weight: bolder;
-				background-color: rgba(255, 255, 255);
-				border-radius: 27px;
-				border: 3px solid rgb(161, 161, 161);
-				flex-direction: column;
-				justify-content: space-between;
-			}
+// 		<div class="fields-container">
+// 			<input id=inputStock type=number placeholder=Stock required class=input />
+// 		</div>
 
-			form .title {
-				color: rgb(161, 161, 161);
-				font-size: 54px;
-			}
+// 		<div class="fields-container">
+// 			<label for="inactiveCheck">Inactivo</label>
+// 			<input id=inputInactive type=checkbox name=inactiveCheck class=checkbox />
+// 		</div>
+// 	</div>
 
-			form .input {
-				background-color: rgba(161, 161, 161, 0.39);
-				border: none;
-				border-radius: 15px;
-				
-				width: 100%;
-				height: 15%;
-				
-				color: black;
-				font-size: 24px;
-				text-align: center;
-			}
+// 	<input type=submit class=button />
+// </form>
 
-			form .input::placeholder {
-				color: rgba(161, 161, 161, 0.39);
-			}
+//   async addListeners() {
+//     const ls = State.getState;
 
-			form .input:focus {
-				background-color: rgba(161, 161, 161, 0.39);
-			}
+//     const formEl = this.shadow.querySelector(".form") as HTMLElement;
 
-			form .titleContainer {
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				position: absolute;
-				top: 0;
-				padding-top: 18px;
-				width: 100%;
+//     const inputNameEl = this.shadow.querySelector(
+//       "#inputName"
+//     ) as HTMLInputElement;
+//     const inputProductEl = this.shadow.querySelector("#inputProduct") as any;
+//     const inputServiceEl = this.shadow.querySelector("#inputService") as any;
+//     const inputBuyEl = this.shadow.querySelector("#inputBuy") as any;
+//     const inputSellEl = this.shadow.querySelector("#inputSell") as any;
+//     const inputInactiveEl = this.shadow.querySelector("#inputInactive") as any;
+//     const inputStockEl = this.shadow.querySelector(
+//       "#inputStock"
+//     ) as HTMLInputElement;
 
-				font-size: 21px;
-				font-weight: bolder;
-				color: black;
-			}
+//     const name = inputNameEl.value;
+//     const isProduct = inputProductEl.value;
+//     const isService = inputServiceEl.value;
+//     const buy = inputBuyEl.value;
+//     const sell = inputSellEl.value;
+//     const stock = inputStockEl.value;
+//     const inactive = inputInactiveEl.value;
 
-			form .button {
-				background-color: white;
-				border: none;
-				border: 2px solid rgb(161, 161, 161);
-				border-radius: 27px 0 22px 0;
+//     const action = this.getAttribute("action");
 
-				width: 18vw;
+//     switch (action) {
+//       case "get":
+//         const [product, status] = await State.fetchData({
+//           path: `${State.Routes.products}/${ls.card_selected.id}`,
+//           method: "get",
+//         });
 
-				display: flex;
-				align-self: flex-end;
-				
-				font-size: 54px;
-				font-weight: bolder;
-				color: rgb(161, 161, 161);
-				text-align: center;
-				
-				cursor: pointer;
-			}
-			}
+//         if (status == 200) {
+//           const { name, isProduct, isService, buy, sell, inactive, stock } =
+//             product.data;
 
-			form .button:hover {
-				background-color: rgb(161, 161, 161);
-				color: white;
-			}
+//           inputNameEl.value = name;
+//           inputStockEl.value = stock;
 
-			form .checkboxes {
-				background-color: rgba(161, 161, 161, 0.39);
-				width: 100%;
-				height: 52%;
-				border-radius: 15px;
-				display: flex;
-				justify-content: space-around;
-				align-items: center;
-			}
+//           inputProductEl.checked = isProduct;
+//           inputServiceEl.checked = isService;
+//           inputBuyEl.checked = buy;
+//           inputSellEl.checked = sell;
+//           inputInactiveEl.checked = inactive;
+//         }
 
-			.fields-container {
-				width: 150px;
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				align-items: center;
-			}
-			
-			.fields-container div {
-				width: 100%;
-				display: flex;
-				column-gap: 10px;
-				justify-content: space-between;
-				align-items: center;
-			}
+//         // const body: any = {
+//         // 	name,
+//         // 	stock,
+//         // 	isProduct,
+//         // 	isService,
+//         // 	buy,
+//         // 	sell,
+//         // 	inactive,
+//         // 	SubcategoryId: ls.card_selected.id,
+//         // };
 
-			.checkbox, .radioBox {
-				width: 23px;
-				height: 23px;
-			}
+//         // State.fetchData({ path: State.Routes.products, method: "update", body });
+//         break;
 
-			.radioBox:checked {
-				border-color: #007bff;
-			}
+//       default:
+//         formEl.addEventListener("submit", () => {
+//           const body: any = {
+//             name,
+//             stock,
+//             isProduct,
+//             isService,
+//             buy,
+//             sell,
+//             inactive,
+//             SubcategoryId: ls.card_selected.id,
+//           };
 
-			form .checkboxes div label {
-				font-size: 24px;
-				color: black;
-			}
-		`;
+//           State.fetchData({
+//             path: State.Routes.products,
+//             method: "post",
+//             body,
+//           });
+//         });
+//         break;
+//     }
+//   }
+// }
 
-		this.shadow.appendChild(style);
-	}
+import * as React from "react";
+import Button from "@mui/joy/Button";
+import FormControl from "@mui/joy/FormControl";
+import FormLabel from "@mui/joy/FormLabel";
+import Input from "@mui/joy/Input";
+import Modal from "@mui/joy/Modal";
+import ModalDialog from "@mui/joy/ModalDialog";
+import DialogTitle from "@mui/joy/DialogTitle";
+import DialogContent from "@mui/joy/DialogContent";
+import Stack from "@mui/joy/Stack";
+import Radio from "@mui/joy/Radio";
+import RadioGroup from "@mui/joy/RadioGroup";
+import Box from "@mui/joy/Box";
+import Checkbox from "@mui/joy/Checkbox";
 
-	render() {
-		this.shadow.innerHTML = `
-		<form class="form">
-			<input id=inputName type=text placeholder=Nombre required class=input />
+export default function ProductModal() {
+  const [open, setOpen] = React.useState<boolean>(false);
 
-			<div class=checkboxes>					
-				<div class="fields-container">
-					<div>
-						<label>Servicio</label>
-						<input id=inputService type=radio name=productType class=radioBox />
-					</div>
-					
-					<div>
-						<label>Producto</label>
-						<input id=inputProduct type=radio name=productType class=radioBox checked />
-					</div>
-				</div>
-				
-				
-				<div class="fields-container">
-					<div>
-						<label for="buyCheck">Compra</label>
-						<input id=inputBuy type=checkbox name=buyCheck class=checkbox checked />
-					</div>
-					
-					<div>
-						<label for="sellCheck">Venta</label>
-						<input id=inputSell type=checkbox name=sellCheck class=checkbox checked />
-					</div>
-				</div>
-				
-				<div class="fields-container">
-					<input id=inputStock type=number placeholder=Stock required class=input />
-				</div>
-				
-				<div class="fields-container">
-					<label for="inactiveCheck">Inactivo</label>
-					<input id=inputInactive type=checkbox name=inactiveCheck class=checkbox />
-				</div>
-			</div>
-			
-			<input type=submit class=button />
-		</form>
-		`;
-
-		this.addListeners();
-	}
-
-	async addListeners() {
-		const ls = State.getState;
-
-		const formEl = this.shadow.querySelector(".form") as HTMLElement;
-
-		const inputNameEl = this.shadow.querySelector("#inputName") as HTMLInputElement;
-		const inputProductEl = this.shadow.querySelector("#inputProduct") as any;
-		const inputServiceEl = this.shadow.querySelector("#inputService") as any;
-		const inputBuyEl = this.shadow.querySelector("#inputBuy") as any;
-		const inputSellEl = this.shadow.querySelector("#inputSell") as any;
-		const inputInactiveEl = this.shadow.querySelector("#inputInactive") as any;
-		const inputStockEl = this.shadow.querySelector("#inputStock") as HTMLInputElement;
-
-		const name = inputNameEl.value;
-		const isProduct = inputProductEl.value;
-		const isService = inputServiceEl.value;
-		const buy = inputBuyEl.value;
-		const sell = inputSellEl.value;
-		const stock = inputStockEl.value;
-		const inactive = inputInactiveEl.value;
-
-		const action = this.getAttribute("action");
-
-		switch (action) {
-			case "get":
-				const [product, status] = await State.fetchData({ path: `${State.Routes.products}/${ls.card_selected.id}`, method: "get" });
-
-				if (status == 200) {
-					const { name, isProduct, isService, buy, sell, inactive, stock } = product.data
-
-					inputNameEl.value = name;
-					inputStockEl.value = stock;
-
-					inputProductEl.checked = isProduct;
-					inputServiceEl.checked = isService;
-					inputBuyEl.checked = buy;
-					inputSellEl.checked = sell;
-					inputInactiveEl.checked = inactive;
-				}
-
-				// const body: any = {
-				// 	name,
-				// 	stock,
-				// 	isProduct,
-				// 	isService,
-				// 	buy,
-				// 	sell,
-				// 	inactive,
-				// 	SubcategoryId: ls.card_selected.id,
-				// };
-
-				// State.fetchData({ path: State.Routes.products, method: "update", body });
-				break;
-
-			default:
-				formEl.addEventListener("submit", () => {
-					const body: any = {
-						name,
-						stock,
-						isProduct,
-						isService,
-						buy,
-						sell,
-						inactive,
-						SubcategoryId: ls.card_selected.id,
-					};
-
-					State.fetchData({ path: State.Routes.products, method: "post", body });
-				});
-				break;
-		}
-	}
+  return (
+    <React.Fragment>
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <ModalDialog>
+          <DialogTitle>PRODUCTOS</DialogTitle>
+          <DialogContent>
+            Completá la información para crear el producto.
+          </DialogContent>
+          <form
+            onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+              e.preventDefault();
+              setOpen(false);
+            }}
+          >
+            <Stack spacing={2}>
+              <FormControl>
+                <FormLabel>Nombre</FormLabel>
+                <Input autoFocus required />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Tipo</FormLabel>
+                <RadioGroup defaultValue="female" name="radio-buttons-group">
+                  <Radio value="Product" label="Producto" />
+                  <Radio value="service" label="Servicio" />
+                </RadioGroup>
+              </FormControl>
+              <FormControl>
+                <Box sx={{ display: "flex", gap: 3 }}>
+                  <Checkbox label="Compra" defaultChecked />
+                  <Checkbox label="Venta" defaultChecked />
+                </Box>
+              </FormControl>
+              <FormControl>
+                <FormLabel>Stock</FormLabel>
+                <Input
+                  type="number"
+                  placeholder="Stock"
+                  defaultValue={1}
+                  slotProps={{
+                    input: {
+                      min: 0,
+                      step: 1,
+                    },
+                  }}
+                />
+              </FormControl>
+              <Button type="submit">Submit</Button>
+            </Stack>
+          </form>
+        </ModalDialog>
+      </Modal>
+    </React.Fragment>
+  );
 }
-
-customElements.define("product-modal", ProductModal);

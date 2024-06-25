@@ -2,72 +2,72 @@ import { useContext } from "react";
 import { GlobalContext } from "../../state";
 import { useNavigate } from "react-router-dom";
 
-import "./index.css"
+import ProductModal from "../product-modal";
+import "./index.css";
 
 function Grid({ resource, title, children }) {
-	const { state, setState } = useContext(GlobalContext)
+  const { state, setState } = useContext(GlobalContext);
 
-	const navigate = useNavigate()
+  const navigate = useNavigate();
 
-	const changeGrid = () => {
-		switch (resource) {
-			case state.routes.subCategories:
-				navigate("/productos");
-				break;
+  const changeGrid = () => {
+    switch (resource) {
+      case state.routes.subCategories:
+        navigate("/productos");
+        break;
 
-			// case state.routes.products:
-			// 	const mainEl = document.querySelector(".container") as HTMLElement;
+      default:
+        navigate("/subcategorias");
+        break;
+    }
+  };
 
-			// 	let modal = document.createElement("product-modal");
-			// 	modal.setAttribute("action", "get");
+  const itemEls = document.querySelectorAll(".item") as NodeList;
 
-			// 	mainEl.appendChild(modal)
-			// 	break;
+  for (const itemEl of itemEls) {
+    // checkear
+    itemEl.addEventListener("click", (e) => {
+      setState({ card_selected: e.target });
 
-			default:
-				navigate("/subcategorias");
-				break;
-		}
-	}
+      changeGrid();
+    });
+  }
 
-	const itemEls = document.querySelectorAll(".item") as NodeList;
+  const handleCreate = () => {
+    const mainEl = document.querySelector(".container") as HTMLElement;
+    const buttonEl = document.querySelector(".button") as HTMLElement;
 
-	for (const itemEl of itemEls) { // checkear
-		itemEl.addEventListener("click", (e) => {
-			setState({ card_selected: e.target });
+    buttonEl.addEventListener("click", () => {
+      const path = this.getAttribute("resource");
+      let modal;
 
-			changeGrid();
-		});
-	}
+      if (path == state.routes.products)
+        modal = document.createElement("product-modal");
+      else {
+        modal = document.createElement("input-modal");
+        modal.setAttribute("resource", path);
+      }
 
-	const handleCreate = () => {
-		const mainEl = document.querySelector(".container") as HTMLElement;
-		const buttonEl = document.querySelector(".button") as HTMLElement;
+      mainEl.appendChild(modal);
+    });
+  };
 
-		buttonEl.addEventListener("click", () => {
-			const path = this.getAttribute("resource");
-			let modal;
-
-			if (path == state.routes.products)
-				modal = document.createElement("product-modal");
-			else {
-				modal = document.createElement("input-modal");
-				modal.setAttribute("resource", path);
-			}
-
-			mainEl.appendChild(modal);
-		})
-	}
-
-	return <div className="container">
-		<div className="background">{title}</div>
-		<div className="grid">{children.map((el) => <div key={el.id} id={el.id} className={"item"}>{el.name}</div>)}</div>
-		<div onClick={handleCreate} className="button">Crear</div>
-	</div>
+  return (
+    <div className="container">
+      <div className="background">{title}</div>
+      <div className="grid">
+        {children.map((el) => (
+          <div key={el.id} id={el.id} className={"item"}>
+            {el.name}
+          </div>
+        ))}
+      </div>
+      <div onClick={handleCreate} className="button">
+        Crear
+      </div>
+      {<ProductModal />}
+    </div>
+  );
 }
 
-export default Grid
-
-
-
-
+export default Grid;
