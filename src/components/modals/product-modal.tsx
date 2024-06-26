@@ -17,31 +17,52 @@ import Checkbox from "@mui/joy/Checkbox";
 import { GlobalContext } from "../../state";
 
 export default function ProductModal({ action }) {
-  const [elements, setElements] = useState({ title: "", stock: 1, buy: true, sell: true, service: false });
+  console.log("prueba");
+
+  const [elements, setElements] = useState({
+    title: "",
+    stock: 1,
+    buy: true,
+    sell: true,
+    product: false,
+    service: false,
+  });
   const [open, setOpen] = useState<boolean>(true);
 
   const { fetchData, state } = useContext(GlobalContext);
 
   useEffect(() => {
     const getDataFromDb = async () => {
-      const [response, status] = await fetchData({ path: `products/${state.card_selected.id}` })
+      const [response, status] = await fetchData({
+        path: `products/${state.card_selected.id}`,
+      });
 
       if (status == 200) {
-        const { name, stock, buy, sell, isService } = response.data
+        const { name, stock, buy, sell, isService } = response.data;
 
-        setElements({ title: name, stock, buy, sell, service: isService })
+        setElements((prev) => {
+          return {
+            ...prev,
+            title: name,
+            stock,
+            buy,
+            sell,
+            service: isService,
+            product: !isService,
+          };
+        });
       } else {
         console.log(response);
       }
-    }
+    };
 
     if (action == "GET") {
-      getDataFromDb()
+      getDataFromDb();
     }
-  }, [])
+  }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     const formElements = e.currentTarget.elements;
 
@@ -56,40 +77,109 @@ export default function ProductModal({ action }) {
 
     setOpen(false);
 
-    const [response, status] = await fetchData({ method: "POST", path: "products", data })
+    let method = "POST";
+    let path = "products";
 
-    if (status == 201) {
-      location.replace("/")
+    if (action == "GET") {
+      method = "PATCH";
+      path = "products/" + state.card_selected.id;
+    }
+
+    const [response, status] = await fetchData({ method, path, data });
+
+    if (status == 201 || status == 200) {
+      location.replace("/");
     } else {
       console.log(response);
     }
-  }
+  };
+
+  const handleChange = (e) => {
+    switch (e.target.name) {
+      case "product":
+        setElements((prev) => {
+          return {
+            ...prev,
+            product: e.target.checked,
+            service: !e.target.checked,
+          };
+        });
+        break;
+      case "service":
+        setElements((prev) => {
+          return {
+            ...prev,
+            service: e.target.checked,
+            product: !e.target.checked,
+          };
+        });
+        break;
+      case "buy":
+        setElements((prev) => {
+          return { ...prev, buy: e.target.checked };
+        });
+        break;
+      case "sell":
+        setElements((prev) => {
+          return { ...prev, sell: e.target.checked };
+        });
+        break;
+    }
+  };
 
   return (
     <Fragment>
       <Modal open={open} onClose={() => setOpen(false)}>
         <ModalDialog>
           <DialogTitle>PRODUCTOS</DialogTitle>
-          <DialogContent>
-            Completá la información del producto.
-          </DialogContent>
+          <DialogContent>Completá la información del producto.</DialogContent>
           <form id="productForm" onSubmit={handleSubmit}>
             <Stack spacing={2}>
               <FormControl>
                 <FormLabel>Descripción</FormLabel>
-                <Input value={elements.title} id="title" name="title" autoFocus required />
+                <Input
+                  value={elements.title}
+                  id="title"
+                  name="title"
+                  autoFocus
+                  required
+                />
               </FormControl>
               <FormControl>
                 <FormLabel>Tipo</FormLabel>
-                <RadioGroup value={elements.service ? "service" : "product"} name="radio-buttons-group">
-                  <Radio name="product" value="product" label="Producto" />
-                  <Radio name="service" value="service" label="Servicio" />
+                <RadioGroup name="radio-buttons-group">
+                  <Radio
+                    onChange={handleChange}
+                    name="product"
+                    value="product"
+                    label="Producto"
+                    checked={elements.product}
+                  />
+                  <Radio
+                    onChange={handleChange}
+                    name="service"
+                    value="service"
+                    label="Servicio"
+                    checked={elements.service}
+                  />
                 </RadioGroup>
               </FormControl>
               <FormControl>
                 <Box sx={{ display: "flex", gap: 3 }}>
-                  <Checkbox id="buy" name="buy" label="Compra" checked={elements.buy} />
-                  <Checkbox id="sell" name="sell" label="Venta" checked={elements.sell} />
+                  <Checkbox
+                    onChange={handleChange}
+                    id="buy"
+                    name="buy"
+                    label="Compra"
+                    checked={elements.buy}
+                  />
+                  <Checkbox
+                    onChange={handleChange}
+                    id="sell"
+                    name="sell"
+                    label="Venta"
+                    checked={elements.sell}
+                  />
                 </Box>
               </FormControl>
               <FormControl>
