@@ -12,3 +12,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     </GlobalProvider>
   </React.StrictMode >
 );
+
+window.addEventListener("load", () => {
+  if (location.pathname != "/")
+    location.replace("/")
+})

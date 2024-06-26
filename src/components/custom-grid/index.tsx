@@ -1,19 +1,24 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { GlobalContext } from "../../state";
 import { useNavigate } from "react-router-dom";
 
-import ProductModal from "../product-modal";
+import ProductModal from "../modals/product-modal";
+import InputModal from "../modals/modal";
 import "./index.css";
 
-function Grid({ resource, title, children }) {
-  const { state, setState } = useContext(GlobalContext);
-
+function Grid({ resource, title, children = [] }) {
   const navigate = useNavigate();
+
+  const { state, setState } = useContext(GlobalContext);
+  const [modalState, setModal] = useState({ open: false, action: "POST" });
 
   const changeGrid = () => {
     switch (resource) {
       case state.routes.subCategories:
         navigate("/productos");
+        break;
+      case state.routes.products:
+        setModal({ action: "GET", open: true })
         break;
 
       default:
@@ -22,34 +27,10 @@ function Grid({ resource, title, children }) {
     }
   };
 
-  const itemEls = document.querySelectorAll(".item") as NodeList;
-
-  for (const itemEl of itemEls) {
-    // checkear
-    itemEl.addEventListener("click", (e) => {
-      setState({ card_selected: e.target });
-
-      changeGrid();
-    });
-  }
-
   const handleCreate = () => {
-    const mainEl = document.querySelector(".container") as HTMLElement;
-    const buttonEl = document.querySelector(".button") as HTMLElement;
-
-    buttonEl.addEventListener("click", () => {
-      const path = this.getAttribute("resource");
-      let modal;
-
-      if (path == state.routes.products)
-        modal = document.createElement("product-modal");
-      else {
-        modal = document.createElement("input-modal");
-        modal.setAttribute("resource", path);
-      }
-
-      mainEl.appendChild(modal);
-    });
+    setModal((prev) => {
+      return { ...prev, open: true }
+    })
   };
 
   return (
@@ -57,15 +38,13 @@ function Grid({ resource, title, children }) {
       <div className="background">{title}</div>
       <div className="grid">
         {children.map((el) => (
-          <div key={el.id} id={el.id} className={"item"}>
-            {el.name}
-          </div>
+          <div onClick={(e) => { setState({ card_selected: e.target }); changeGrid(); }} key={el.id} id={el.id} className={"item"}>{el.name}</div>
         ))}
       </div>
       <div onClick={handleCreate} className="button">
         Crear
       </div>
-      {<ProductModal />}
+      {modalState.open ? resource == state.routes.products ? <ProductModal action={modalState.action} /> : <InputModal resource={resource} /> : ""}
     </div>
   );
 }
