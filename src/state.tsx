@@ -29,7 +29,7 @@ const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
         }
     });
 
-    const fetchData = async ({ method = "GET", data, query = "", path = "" }) => {
+    const fetchData = async ({ method = "GET", data = {}, query = "", path }) => {
         const response = await axios(`${apiBaseUrl}/${path}?${query}`, {
             method,
             data

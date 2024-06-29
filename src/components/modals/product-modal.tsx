@@ -17,8 +17,6 @@ import Checkbox from "@mui/joy/Checkbox";
 import { GlobalContext } from "../../state";
 
 export default function ProductModal({ action }) {
-  console.log("prueba");
-
   const [elements, setElements] = useState({
     title: "",
     stock: 1,
@@ -27,6 +25,7 @@ export default function ProductModal({ action }) {
     product: false,
     service: false,
   });
+
   const [open, setOpen] = useState<boolean>(true);
 
   const { fetchData, state } = useContext(GlobalContext);
@@ -96,6 +95,14 @@ export default function ProductModal({ action }) {
 
   const handleChange = (e) => {
     switch (e.target.name) {
+      case "title":
+        setElements((prev) => {
+          return {
+            ...prev,
+            title: e.target.value,
+          };
+        });
+        break;
       case "product":
         setElements((prev) => {
           return {
@@ -124,6 +131,14 @@ export default function ProductModal({ action }) {
           return { ...prev, sell: e.target.checked };
         });
         break;
+      case "stock":
+        setElements((prev) => {
+          return {
+            ...prev,
+            stock: e.target.value,
+          };
+        });
+        break;
     }
   };
 
@@ -138,6 +153,7 @@ export default function ProductModal({ action }) {
               <FormControl>
                 <FormLabel>Descripción</FormLabel>
                 <Input
+                  onChange={handleChange}
                   value={elements.title}
                   id="title"
                   name="title"
@@ -185,6 +201,7 @@ export default function ProductModal({ action }) {
               <FormControl>
                 <FormLabel>Stock</FormLabel>
                 <Input
+                  onChange={handleChange}
                   id="stock"
                   name="stock"
                   type="number"

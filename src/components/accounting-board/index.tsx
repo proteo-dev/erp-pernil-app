@@ -1,12 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../../state";
-// import { useNavigate } from "react-router-dom";
+import MovementModal from "../modals/movement-modal";
 
 import "./index.css"
 
 function AccountingBoard() {
 	const { state, fetchData } = useContext(GlobalContext)
+
 	const [movements, setMovements] = useState([])
+	const [modalState, setModal] = useState({ open: false, action: "POST" });
 
 	const path = location.pathname.replace("/", "")
 
@@ -25,6 +27,12 @@ function AccountingBoard() {
 		})()
 	}, [])
 
+	const handleCreate = () => {
+		setModal((prev) => {
+			return { ...prev, open: true }
+		})
+	};
+
 	const capitalizedText = path[0].toUpperCase() + path.slice(1)
 
 	return <div className="container">
@@ -38,6 +46,7 @@ function AccountingBoard() {
 						<th>Unidades</th>
 						<th>Usuario</th>
 						<th>{path == "ventas" ? "Cliente" : "Proveedor"}</th>
+						<th>Forma de pago</th>
 						<th>Fecha</th>
 					</tr>
 				</thead>
@@ -48,13 +57,16 @@ function AccountingBoard() {
 						<td>{el.units}</td>
 						<td>{el.User.fullName}</td>
 						<td>{el.Client?.name || el.Supplier?.name}</td>
+						<td>{el.paymentMethod}</td>
 						<td>{el.createdAt.split("T")[0]}</td>
 					</tr>)
 					}
 				</tbody>
 			</table>
 		</div>
-		<div className="button">Crear</div>
+		<div onClick={handleCreate} className="button">Crear</div>
+		{modalState.open ? <MovementModal operation={path == "ventas" ? "Ventas" : "Compras"} action={modalState.action} /> : ""} {/*no se cierra internamente cuando cambio entre ventas y compras*/}
+
 	</div>
 }
 
