@@ -1,193 +1,4 @@
-// import State from "../state";
-// import searchModal from "./search-modal"
-
-// class MovementModal extends HTMLElement {
-// 	shadow = this.attachShadow({ mode: "open" });
-// 	isSalesOperation: boolean
-
-// 	constructor() {
-// 		super();
-// 	}
-
-// 	connectedCallback() {
-// 		this.render();
-// 		this.addStyles();
-// 	}
-
-// 	addStyles() {
-// 		const style = document.createElement("style");
-
-// 		style.innerHTML = `
-// 			* {
-// 				margin: 0;
-// 				padding: 0;
-// 				box-sizing: border-box;
-// 			}
-
-// 			form {
-// 				display: flex;
-// 				position: absolute;
-// 				bottom: 5%;
-// 				top: 5%;
-// 				right: 7.5%;
-// 				left: 7.5%;
-// 				font-weight: bolder;
-// 				background-color: rgba(255, 255, 255);
-// 				border-radius: 27px;
-// 				border: 3px solid rgb(161, 161, 161);
-// 				flex-direction: column;
-// 				justify-content: space-between;
-// 			}
-
-// 			form .input {
-// 				background-color: rgba(161, 161, 161, 0.39);
-// 				border: none;
-// 				border-radius: 15px;
-
-// 				width: 100%;
-// 				height: 15%;
-
-// 				color: black;
-// 				font-size: 24px;
-// 				text-align: center;
-// 			}
-
-// 			form .input::placeholder {
-// 				color: rgba(161, 161, 161, 0.39);
-// 			}
-
-// 			form .button {
-// 				background-color: white;
-// 				border: none;
-// 				border: 2px solid rgb(161, 161, 161);
-// 				border-radius: 27px 0 22px 0;
-
-// 				width: 18vw;
-
-// 				display: flex;
-// 				align-self: flex-end;
-
-// 				font-size: 54px;
-// 				font-weight: bolder;
-// 				color: rgb(161, 161, 161);
-// 				text-align: center;
-
-// 				cursor: pointer;
-// 			}
-
-// 			form .button:hover {
-// 				background-color: rgb(161, 161, 161);
-// 				color: white;
-// 			}
-
-// 			form .inputs-container {
-// 				background-color: rgba(161, 161, 161, 0.39);
-// 				width: 100%;
-// 				height: 52%;
-// 				border-radius: 15px;
-// 				display: flex;
-// 				justify-content: space-around;
-// 				align-items: center;
-// 			}
-
-// 			.fields-container {
-// 				width: 150px;
-// 				display: flex;
-// 				flex-direction: column;
-// 				justify-content: center;
-// 				align-items: center;
-// 			}
-
-// 			.fields-container div {
-// 				width: 100%;
-// 				display: flex;
-// 				column-gap: 10px;
-// 				justify-content: space-between;
-// 				align-items: center;
-// 			}
-// 		`;
-
-// 		this.shadow.appendChild(style);
-// 	}
-
-// 	render() {
-// 		const operation = this.getAttribute("operation");
-// 		this.isSalesOperation = operation == "ventas"
-
-// 		const entity = this.isSalesOperation ? "Cliente" : "Proveedor"
-
-// 		this.shadow.innerHTML = `
-// 		<form class="form">
-// 			<div class=inputs-container>				
-// 				<div class="fields-container">
-// 					<div>
-// 						<input id=inputProduct name=product type=number placeholder=Producto required class=input />
-// 						<button id="productsButton" >Ver</button>
-// 					</div>
-
-// 					<div>
-// 						<input id=inputEntity name=entity type=number placeholder=${entity} required class=input />
-// 						<button id="buttonEntity" >Ver</button>
-// 					</div>
-// 				</div>
-
-// 				<div class="fields-container">
-// 					<div>
-// 						<input id=inputAmount name=amount type=number placeholder=Monto class=input />
-// 					</div>
-
-// 					<div>
-// 						<input id=inputUnits name=units type=number placeholder=Unidades required class=input />
-// 					</div>
-// 				</div>
-// 			</div>
-// 			<searchModal />
-
-// 			<input type=submit class=button />
-// 		</form>
-// 		`;
-
-// 		// agregar estetica y buscadores de clientes, proveedores y productos
-// 		this.hideElements()
-// 		this.addListeners();
-// 	}
-
-// 	hideElements() {
-// 		const inputAmountEl = this.shadow.querySelector("#inputAmount") as HTMLInputElement;
-
-// 		if (this.isSalesOperation) inputAmountEl.style.display = "none"
-// 	}
-
-// 	async formListener() {
-// 		const formEl = this.shadow.querySelector(".form") as HTMLElement;
-
-// 		const inputProductEl = this.shadow.querySelector("#inputProduct") as HTMLInputElement;
-// 		const inputEntityEl = this.shadow.querySelector("#inputEntity") as HTMLInputElement;
-// 		const inputUnitsEl = this.shadow.querySelector("#inputUnits") as HTMLInputElement;
-
-// 		formEl.addEventListener("submit", (e) => {
-// 			e.preventDefault()
-// 			const ProductId = inputProductEl.value;
-// 			const entity = inputEntityEl.value;
-// 			const units = inputUnitsEl.value;
-
-// 			const body: any = {
-// 				units,
-// 				ProductId,
-// 			};
-
-// 			if (this.isSalesOperation) body.ClientId = entity
-// 			else {
-// 				body.SupplierId = entity
-// 				body.operation = "compra"
-// 				body.amount = ""
-// 			}
-
-// 			State.fetchData({ path: State.Routes.movements, method: "post", body });
-// 		});
-// 	}
-
-import { useContext, useState, Fragment, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 
 import Button from "@mui/joy/Button";
 import FormControl from "@mui/joy/FormControl";
@@ -201,19 +12,21 @@ import Stack from "@mui/joy/Stack";
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 
+import SearchModal from "./search-modal";
+
 import { GlobalContext } from "../../state";
 
-export default function MovementModal({ action, operation }) {
+export default function MovementModal({ action, operation, handleClose }) {
+	const isSalesOperation = operation == "ventas"
+
 	const [elements, setElements] = useState({
-		amount: 0,
+		amountPerUnit: 0,
+		amountToPaid: 0,
 		units: 1,
 		paymentMethod: "",
-		ClientId: 0,
-		SupplierId: 0,
+		agentId: 0,
 		ProductId: 0,
 	});
-
-	const [open, setOpen] = useState<boolean>(true);
 
 	const { fetchData, state } = useContext(GlobalContext);
 
@@ -251,18 +64,18 @@ export default function MovementModal({ action, operation }) {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		const formElements = e.currentTarget.elements;
-
 		const data = {
-			name: formElements.title.value,
-			stock: formElements.stock.value,
-			isService: formElements.service.checked,
-			buy: formElements.buy.checked,
-			sell: formElements.sell.checked,
-			SubcategoryId: state.card_selected.id,
+			ProductId: elements.ProductId,
+			paymentMethod: elements.paymentMethod,
+			units: elements.units,
+			amount: elements.amountToPaid,
 		};
 
-		setOpen(false);
+		if (operation == "ventas") {
+			data["ClientId"] = elements.agentId
+		} else {
+			data["SupplierId"] = elements.agentId
+		}
 
 		let method = "POST";
 		let path = state.routes.movements;
@@ -275,6 +88,7 @@ export default function MovementModal({ action, operation }) {
 		const [response, status] = await fetchData({ method, path, data });
 
 		if (status == 201 || status == 200) {
+			handleClose();
 			location.replace("/");
 		} else {
 			console.log(response);
@@ -282,12 +96,14 @@ export default function MovementModal({ action, operation }) {
 	};
 
 	const handleChange = (e) => {
-		switch (e.target.name) {
-			case "entity":
+		const value = e.target.name || e.target.role
+
+		switch (value) {
+			case "agent":
 				setElements((prev) => {
 					return {
 						...prev,
-						title: e.target.value,
+						agentId: e.target.value,
 					};
 				});
 				break;
@@ -295,36 +111,56 @@ export default function MovementModal({ action, operation }) {
 				setElements((prev) => {
 					return {
 						...prev,
-						product: e.target.checked,
-						service: !e.target.checked,
+						ProductId: e.target.value,
 					};
 				});
 				break;
-			case "amout":
+			case "amountPerUnit":
 				setElements((prev) => {
 					return {
 						...prev,
-						service: e.target.checked,
-						product: !e.target.checked,
+						amountPerUnit: e.target.value,
+						amountToPaid: e.target.value * prev.units,
+					};
+				});
+				break;
+			case "amountToPaid":
+				setElements((prev) => {
+					return {
+						...prev,
+						amountToPaid: e.target.value,
+						amountPerUnit: Math.round(e.target.value / prev.units)
 					};
 				});
 				break;
 			case "units":
 				setElements((prev) => {
-					return { ...prev, buy: e.target.checked };
+					return { ...prev, units: e.target.value, amountPerUnit: prev.amountToPaid / e.target.value };
 				});
 				break;
-			case "payment":
+			case "option":
 				setElements((prev) => {
-					return { ...prev, buy: e.target.checked };
+					return { ...prev, paymentMethod: e.target.innerText };
 				});
 				break;
 		}
 	};
 
+	const catchSelectedItem = ({ target, operation }) => {
+		if (!operation) {
+			setElements((prev) => {
+				return { ...prev, ProductId: target.id };
+			})
+		} else {
+			setElements((prev) => {
+				return { ...prev, agentId: target.id };
+			})
+		}
+	}
+
 	return (
-		<Fragment>
-			<Modal open={open} onClose={() => setOpen(false)}>
+		<>
+			<Modal open={true} onClose={() => handleClose()}>
 				<ModalDialog>
 					<DialogTitle>Movimientos</DialogTitle>
 					<DialogContent>Completá la información del movimiento.</DialogContent>
@@ -340,20 +176,20 @@ export default function MovementModal({ action, operation }) {
 									name="product"
 									autoFocus
 									required
-									endDecorator={<Button>Buscar</Button>}
+									endDecorator={<SearchModal catchSelectedItem={catchSelectedItem} />}
 								/>
 							</FormControl>
 							<FormControl>
-								<FormLabel>Codigo del {operation == "ventas" ? "cliente" : "proveedor"}</FormLabel>
+								<FormLabel>Codigo del {isSalesOperation ? "cliente" : "proveedor"}</FormLabel>
 								<Input
 									onChange={handleChange}
-									value={operation == "ventas" ? elements.ClientId : elements.SupplierId}
-									id="entity"
-									name="entity"
+									value={elements.agentId}
+									id="agent"
+									name="agent"
 									type="number"
 									autoFocus
 									required
-									endDecorator={<Button>Buscar</Button>}
+									endDecorator={<SearchModal catchSelectedItem={catchSelectedItem} operation={operation} />}
 								/>
 							</FormControl>
 							<FormControl>
@@ -363,36 +199,39 @@ export default function MovementModal({ action, operation }) {
 									id="units"
 									name="units"
 									type="number"
-									placeholder="Unidades"
 									value={elements.units}
 								/>
 							</FormControl>
 							<FormControl>
-								<FormLabel>Monto</FormLabel>
+								<FormLabel>Monto X u.</FormLabel>
 								<Input
 									onChange={handleChange}
-									id="amount"
-									name="amount"
+									id="amountPerUnit"
+									name="amountPerUnit"
 									type="number"
-									placeholder="Monto"
-									value={elements.amount}
+									startDecorator={"$"}
+									value={elements.amountPerUnit}
+								/>
+							</FormControl>
+							<FormControl>
+								<FormLabel>Monto total</FormLabel>
+								<Input
+									onChange={handleChange}
+									id="amountToPaid"
+									name="amountToPaid"
+									type="number"
+									startDecorator={"$"}
+									value={elements.amountToPaid}
 								/>
 							</FormControl>
 							<FormControl>
 								<FormLabel>Método de pago</FormLabel>
-								{/* <Input
-									onChange={handleChange}
-									id="paymentMethod"
-									name="paymentMethod"
-									placeholder="metodo de pago"
-									value={elements.paymentMethod}
-								/> */}
-								<Select name="payment" onChange={handleChange} defaultValue="cash">
-									<Option id="cash" value="cash">Efectivo</Option>
-									<Option id="transfer" value="transfer">Transferencia</Option>
-									<Option id="mp" value="mp">Mercado pago</Option>
-									<Option id="creditCard" value="creditCard">Tarjeta crédito</Option>
-									<Option id="debitCard" value="debitCard">Tarjeta débito</Option>
+								<Select onChange={handleChange} defaultValue="cash">
+									<Option id="cash" value="cash">efectivo</Option>
+									<Option id="transfer" value="transfer">transferencia</Option>
+									<Option id="mp" value="mp">mercado pago</Option>
+									<Option id="creditCard" value="creditCard">tarjeta de credito</Option>
+									<Option id="debitCard" value="debitCard">tarjeta de debito</Option>
 								</Select>
 							</FormControl>
 							<Button type="submit">Ok</Button>
@@ -400,7 +239,7 @@ export default function MovementModal({ action, operation }) {
 					</form>
 				</ModalDialog>
 			</Modal>
-		</Fragment>
+		</>
 	);
 }
 

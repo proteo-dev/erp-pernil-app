@@ -27,9 +27,9 @@ function AccountingBoard() {
 		})()
 	}, [])
 
-	const handleCreate = () => {
+	const handleClose = () => {
 		setModal((prev) => {
-			return { ...prev, open: true }
+			return { ...prev, open: false }
 		})
 	};
 
@@ -64,24 +64,15 @@ function AccountingBoard() {
 				</tbody>
 			</table>
 		</div>
-		<div onClick={handleCreate} className="button">Crear</div>
-		{modalState.open ? <MovementModal operation={path == "ventas" ? "Ventas" : "Compras"} action={modalState.action} /> : ""} {/*no se cierra internamente cuando cambio entre ventas y compras*/}
+		<div
+			onClick={() => setModal((prev) => { return { ...prev, open: true } })}
+			className="button">
+			Crear
+		</div>
 
-	</div>
+		{modalState.open && <MovementModal operation={path} action={modalState.action} handleClose={handleClose} />} {/*no se cierra internamente cuando cambio entre ventas y compras*/}
+
+	</div >
 }
-
-// 	addListeners() {
-// 		const mainEl = this.shadow.querySelector(".container") as HTMLElement;
-// 		const buttonEl = this.shadow.querySelector(".button") as HTMLElement;
-
-// 		buttonEl.addEventListener("click", () => {
-// 			const modal = document.createElement("movement-modal");
-
-// 			modal.setAttribute("operation", this.path);
-
-// 			mainEl.appendChild(modal);
-// 		})
-// 	}
-// }
 
 export default AccountingBoard
