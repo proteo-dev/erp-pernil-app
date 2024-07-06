@@ -5,7 +5,7 @@
 }
 
 .container {
-    position:relative;
+    position: relative;
     height: 100%;
 
     display: flex;
@@ -28,6 +28,7 @@
 }
 
 .table-container {
+    padding: 0 14px;
     min-height: 30vh;
     width: 100%;
     display: flex;
@@ -40,7 +41,8 @@ table {
     border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
@@ -52,7 +54,7 @@ th {
 
 td {
     background-color: rgba(255, 255, 255, 0.27);
-    
+
     max-width: 100px;
     max-height: 100px;
 

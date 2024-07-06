@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { GlobalContext } from "../../state";
 
-import CustomGrid from "../custom-grid/index"
+import CustomGrid from "../custom-panel/index"
 
 function Products() {
   const { state, fetchData } = useContext(GlobalContext)

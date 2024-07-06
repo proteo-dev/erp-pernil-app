@@ -74,7 +74,7 @@ function AccountingBoard() {
 			Crear
 		</div>
 
-		{modalState.open && <MovementModal operation={path} action={modalState.action} handleClose={handleClose} />} {/*no se cierra internamente cuando cambio entre ventas y compras*/}
+		{modalState.open && <MovementModal operation={path} action={modalState.action} handleClose={handleClose} />}
 
 	</div >
 }

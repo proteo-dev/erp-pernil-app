@@ -6,13 +6,13 @@ import ProductModal from "../modals/product-modal";
 import InputModal from "../modals/modal";
 import "./index.css";
 
-function Grid({ resource, title, children = [] }) {
+function Panel({ resource, title, children = [] }) {
   const navigate = useNavigate();
 
   const { state, setState } = useContext(GlobalContext);
   const [modalState, setModal] = useState({ open: false, action: "POST" });
 
-  const changeGrid = () => {
+  const changePanel = () => {
     switch (resource) {
       case state.routes.subCategories:
         navigate("/productos");
@@ -27,26 +27,28 @@ function Grid({ resource, title, children = [] }) {
     }
   };
 
-  const handleCreate = () => {
-    setModal((prev) => {
-      return { ...prev, open: true }
-    })
-  };
+  const handleClose = () => setModal((prev) => {
+    return { ...prev, open: false }
+  })
 
   return (
     <div className="container">
       <div className="background">{title}</div>
-      <div className="grid">
+      <div className="panel">
         {children.map((el) => (
-          <div onClick={(e) => { setState({ card_selected: e.target }); changeGrid(); }} key={el.id} id={el.id} className={"item"}>{el.name}</div>
+          <div onClick={(e) => { setState({ card_selected: e.target }); changePanel(); }} key={el.id} id={el.id} className={"item"}>{el.name}</div>
         ))}
       </div>
-      <div onClick={handleCreate} className="button">
+      <div
+        className="button"
+        onClick={() => setModal((prev) => {
+          return { ...prev, open: true }
+        })}>
         Crear
       </div>
-      {modalState.open ? resource == state.routes.products ? <ProductModal action={modalState.action} /> : <InputModal resource={resource} /> : ""}
+      {modalState.open && (resource == state.routes.products ? <ProductModal action={modalState.action} handleClose={handleClose} /> : <InputModal resource={resource} handleClose={handleClose} />)}
     </div>
   );
 }
 
-export default Grid;
+export default Panel;

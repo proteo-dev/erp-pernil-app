@@ -10,6 +10,7 @@ import ModalOverflow from '@mui/joy/ModalOverflow';
 import Typography from '@mui/joy/Typography';
 
 import Input from '../floating-label-input';
+import DataGrid from "../data-grid"
 
 import { GlobalContext } from "../../state";
 
@@ -52,10 +53,11 @@ export default function SearchModal({ catchSelectedItem, operation = null }) {
 				<ModalDialog aria-labelledby="modal-dialog-overflow" layout="fullscreen">
 					<ModalClose />
 					<Typography id="modal-dialog-overflow" level="h2">Búsqueda</Typography>
-					<FormControl>
+					{/* <FormControl>
 						<Input label="Descripción" type="text" />
-					</FormControl>
-					<List>
+					</FormControl> */}
+					<DataGrid data={data} />
+					{/* <List>
 						{data.map((el, index) => (
 							<ListItem id={el.id}
 								key={index}
@@ -65,7 +67,7 @@ export default function SearchModal({ catchSelectedItem, operation = null }) {
 								{el.name[0].toUpperCase() + el.name.slice(1)}
 							</ListItem>
 						))}
-					</List>
+					</List> */}
 				</ModalDialog>
 			</ModalOverflow>
 		</Modal >
