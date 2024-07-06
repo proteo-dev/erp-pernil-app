@@ -18,7 +18,7 @@ function AccountingBoard() {
 
 			const [movements, status] = await fetchData({
 				path: state.routes.movements,
-				query: `operation=${operation}`
+				query: `operation=${operation}` // no funciona
 			})
 
 			if (status == 200) {
@@ -41,23 +41,27 @@ function AccountingBoard() {
 			<table>
 				<thead>
 					<tr>
-						<th>N° operación</th>
-						<th>Monto</th>
+						<th>ID</th>
+						<th>Producto</th>
 						<th>Unidades</th>
+						<th>$/u</th>
+						<th>Total</th>
+						<th>Forma de pago</th>
 						<th>Usuario</th>
 						<th>{path == "ventas" ? "Cliente" : "Proveedor"}</th>
-						<th>Forma de pago</th>
 						<th>Fecha</th>
 					</tr>
 				</thead>
 				<tbody>
 					{movements.map((el) => <tr key={el.id}>
 						<td>{el.id}</td>
-						<td>${el.amount}</td>
+						<td>{el.Product.name}</td>
 						<td>{el.units}</td>
+						<td>${el.amount / el.units}</td>
+						<td>${el.amount}</td>
+						<td>{el.paymentMethod}</td>
 						<td>{el.User.fullName}</td>
 						<td>{el.Client?.name || el.Supplier?.name}</td>
-						<td>{el.paymentMethod}</td>
 						<td>{el.createdAt.split("T")[0]}</td>
 					</tr>)
 					}

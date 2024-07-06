@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 
 import Button from "@mui/joy/Button";
 import FormControl from "@mui/joy/FormControl";
@@ -20,46 +20,15 @@ export default function MovementModal({ action, operation, handleClose }) {
 	const isSalesOperation = operation == "ventas"
 
 	const [elements, setElements] = useState({
-		amountPerUnit: 0,
-		amountToPaid: 0,
+		amountPerUnit: 1,
+		amountToPaid: 1,
 		units: 1,
 		paymentMethod: "",
-		agentId: 0,
-		ProductId: 0,
+		agentId: "",
+		ProductId: "",
 	});
 
 	const { fetchData, state } = useContext(GlobalContext);
-
-	useEffect(() => {
-		// const getDataFromDb = async () => {
-		// 	const [response, status] = await fetchData({
-		// 		path: `products/${state.card_selected.id}`,
-		// 	});
-
-		// 	if (status == 200) {
-		// 		const { amount, units, operation, paymentMethod, User, Client, Supplier } = response.data;
-
-		// 		setElements((prev) => {
-		// 			return {
-		// 				...prev,
-		// 				amount,
-		// 				units,
-		// 				operation,
-		// 				paymentMethod,
-		// 				User: ,
-		// 				Client: ,
-		// 				Supplier: ,
-		// 			};
-		// 		});
-		// 	} else {
-		// 		console.log(response);
-		// 	}
-		// };
-
-		// if (action == "GET") {
-		// 	getDataFromDb();
-		// }
-	}, []);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -135,7 +104,7 @@ export default function MovementModal({ action, operation, handleClose }) {
 				break;
 			case "units":
 				setElements((prev) => {
-					return { ...prev, units: e.target.value, amountPerUnit: prev.amountToPaid / e.target.value };
+					return { ...prev, units: e.target.value, amountToPaid: prev.amountPerUnit * e.target.value };
 				});
 				break;
 			case "option":
@@ -167,7 +136,7 @@ export default function MovementModal({ action, operation, handleClose }) {
 					<form id="movementForm" onSubmit={handleSubmit}>
 						<Stack spacing={2}>
 							<FormControl>
-								<FormLabel>Codigo del producto</FormLabel>
+								<FormLabel>Codigo producto</FormLabel>
 								<Input
 									onChange={handleChange}
 									value={elements.ProductId}
@@ -180,7 +149,7 @@ export default function MovementModal({ action, operation, handleClose }) {
 								/>
 							</FormControl>
 							<FormControl>
-								<FormLabel>Codigo del {isSalesOperation ? "cliente" : "proveedor"}</FormLabel>
+								<FormLabel>Codigo {isSalesOperation ? "cliente" : "proveedor"}</FormLabel>
 								<Input
 									onChange={handleChange}
 									value={elements.agentId}
@@ -200,6 +169,13 @@ export default function MovementModal({ action, operation, handleClose }) {
 									name="units"
 									type="number"
 									value={elements.units}
+									slotProps={
+										{
+											input: {
+												min: 1
+											}
+										}
+									}
 								/>
 							</FormControl>
 							<FormControl>
@@ -211,6 +187,13 @@ export default function MovementModal({ action, operation, handleClose }) {
 									type="number"
 									startDecorator={"$"}
 									value={elements.amountPerUnit}
+									slotProps={
+										{
+											input: {
+												min: 1
+											}
+										}
+									}
 								/>
 							</FormControl>
 							<FormControl>
@@ -222,6 +205,13 @@ export default function MovementModal({ action, operation, handleClose }) {
 									type="number"
 									startDecorator={"$"}
 									value={elements.amountToPaid}
+									slotProps={
+										{
+											input: {
+												min: 1
+											}
+										}
+									}
 								/>
 							</FormControl>
 							<FormControl>
