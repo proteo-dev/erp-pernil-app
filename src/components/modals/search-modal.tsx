@@ -16,29 +16,37 @@ import { GlobalContext } from "../../state";
 
 export default function SearchModal({ catchSelectedItem, operation = null }) {
 	const [open, setOpen] = useState(false);
-	const [data, setData] = useState([]);
+	const [data, setData] = useState({ count: 0, rows: [] });
 
 	const { fetchData, state } = useContext(GlobalContext);
 
+	const getDataFromDb = async ({ page = 0, size = 30 }) => {
+		let path: string
+
+		const offset = page * size
+		const limit = size
+
+		if (operation == "ventas") path = state.routes.clients
+		else if (operation == "compras") path = state.routes.suppliers
+		else path = state.routes.products
+
+		const [response, status] = await fetchData({ path, query: `offset=${offset}&limit=${limit}` });
+
+		if (status == 200) {
+			setData(response.data);
+		} else {
+			alert(response);
+		}
+	};
+
 	useEffect(() => {
-		const getDataFromDb = async () => {
-			let path: string
-
-			if (operation == "ventas") path = state.routes.clients
-			else if (operation == "compras") path = state.routes.suppliers
-			else path = state.routes.products
-
-			const [response, status] = await fetchData({ path });
-
-			if (status == 200) {
-				setData(response.data);
-			} else {
-				console.log(response);
-			}
-		};
-
-		getDataFromDb()
+		getDataFromDb({})
 	}, []);
+
+	const handleSelect = (e) => {
+		catchSelectedItem({ id: e.id, operation })
+		setOpen(false);
+	}
 
 	return <>
 		<Button
@@ -56,18 +64,7 @@ export default function SearchModal({ catchSelectedItem, operation = null }) {
 					{/* <FormControl>
 						<Input label="Descripción" type="text" />
 					</FormControl> */}
-					<DataGrid data={data} />
-					{/* <List>
-						{data.map((el, index) => (
-							<ListItem id={el.id}
-								key={index}
-								component="button"
-								sx={{ padding: "20px 0 20px 10px", fontSize: "20px", fontWeight: "bold", marginBottom: "10px", backgroundColor: "rgb(180 183 186 / 16%)", borderRadius: "6px" }}
-								onClick={(e) => { setOpen(false); catchSelectedItem({ target: e.target, operation }) }}>
-								{el.name[0].toUpperCase() + el.name.slice(1)}
-							</ListItem>
-						))}
-					</List> */}
+					<DataGrid type={!operation ? 1 : 2} count={data.count} data={data.rows} handleSelect={handleSelect} handlePaginate={getDataFromDb} />
 				</ModalDialog>
 			</ModalOverflow>
 		</Modal >

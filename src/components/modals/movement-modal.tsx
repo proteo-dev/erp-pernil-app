@@ -115,14 +115,14 @@ export default function MovementModal({ action, operation, handleClose }) {
 		}
 	};
 
-	const catchSelectedItem = ({ target, operation }) => {
+	const catchSelectedItem = ({ id, operation }) => {
 		if (!operation) {
 			setElements((prev) => {
-				return { ...prev, ProductId: target.id };
+				return { ...prev, ProductId: id };
 			})
 		} else {
 			setElements((prev) => {
-				return { ...prev, agentId: target.id };
+				return { ...prev, agentId: id };
 			})
 		}
 	}
