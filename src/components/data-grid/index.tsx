@@ -1,26 +1,59 @@
-import { useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
+
+import { GlobalContext } from "../../state";
 
 const columnsProd = [
   { field: 'id', headerName: 'Código', flex: 0.2 },
   { field: 'stock', headerName: 'Stock', flex: 0.2 },
   { field: 'name', headerName: 'Nombre', flex: 1 },
-]
+] // agregar categorias,subcat, precios, fecha modificacion
+
 const columnsEntity = [
   { field: 'id', headerName: 'Código', flex: 0.2 },
   { field: 'name', headerName: 'Nombre', flex: 1 },
 ]
 
-export default function Grid({ data, count, handleSelect, handlePaginate, type }) {
+export default function Grid({ handleSelect, operation }) {
+  const { fetchData, state } = useContext(GlobalContext);
+
+  const [data, setData] = useState({ count: 0, rows: [] });
   const [paginationModel, setPaginationModel] = useState({
-    pageSize: 30,
     page: 0,
+    pageSize: 30,
   });
 
-  const handleClick = (e) => {
-    handleSelect(e)
+  const getDataFromDb = async ({ field = undefined, value = undefined }) => {
+    const { page, pageSize } = paginationModel
+
+    const offset = page * pageSize
+
+    let query = ""
+    if (field) query = `${field}=${value}` // valido que me manden para construir una query y la construyo
+
+    let path: string
+
+    if (operation == "ventas") path = state.routes.clients
+    else if (operation == "compras") path = state.routes.suppliers
+    else path = state.routes.products
+
+    const [response, status] = await fetchData({ path, query: `offset=${offset}&limit=${pageSize}&${query}` });
+
+    if (status == 200) {
+      setData(response.data);
+    } else {
+      alert(response);
+    }
+  };
+
+  useEffect(() => {
+    getDataFromDb({})
+  }, [paginationModel])
+
+  const onFilterChange = (e) => {
+    if (e?.items[0]?.value) getDataFromDb(e.items[0]) // solamente si le coloqué un valor al filtro hace la busqueda
   }
 
   return (
@@ -28,18 +61,17 @@ export default function Grid({ data, count, handleSelect, handlePaginate, type }
       height: "100%", width: '100%', backgroundColor: "rgba(255, 255, 255, 0.63)"
     }}>
       <DataGrid
-        rows={data}
-        columns={type == 1 ? columnsProd : columnsEntity}
-        pageSizeOptions={[10, 20, 30]}
+        rows={data.rows}
+        columns={!operation ? columnsProd : columnsEntity}
+        pageSizeOptions={[30]}
         paginationModel={paginationModel}
         paginationMode='server'
-        rowCount={count}
-        onPaginationModelChange={(e) => {
-          handlePaginate(e)
-          setPaginationModel(e)
-        }}
+        rowCount={data.count}
+        onPaginationModelChange={setPaginationModel}
+        filterMode="server"
+        onFilterModelChange={onFilterChange}
         disableRowSelectionOnClick
-        onRowClick={handleClick}
+        onRowClick={handleSelect}
       />
     </Box>
   );
