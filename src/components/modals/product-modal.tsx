@@ -14,10 +14,13 @@ import RadioGroup from "@mui/joy/RadioGroup";
 import Box from "@mui/joy/Box";
 import Checkbox from "@mui/joy/Checkbox";
 
+import Alert from "./alert";
+
 import { GlobalContext } from "../../state";
 
 export default function ProductModal({ action, handleClose }) {
   const { fetchData, state } = useContext(GlobalContext);
+  const [modalState, setAlertModal] = useState({ open: false, message: "" });
   const [elements, setElements] = useState({
     title: "",
     stock: 1,
@@ -26,6 +29,12 @@ export default function ProductModal({ action, handleClose }) {
     product: false,
     service: false,
   });
+
+  const handleCloseAlert = () => {
+    setAlertModal((prev) => {
+      return { ...prev, open: false }
+    })
+  };
 
   const getDataFromDb = async () => {
     const [response, status] = await fetchData({
@@ -80,13 +89,13 @@ export default function ProductModal({ action, handleClose }) {
       path = "products/" + state.card_selected.id;
     }
 
-    const [response, status] = await fetchData({ method, path, data });
+    const [product, status] = await fetchData({ method, path, data });
 
     if (method == "POST" && status == 201 || method == "PATCH" && status == 200) {
       handleClose()
       location.replace("/");
     } else {
-      alert(response);
+      setAlertModal({ open: true, message: product.response })
     }
   };
 
@@ -139,80 +148,83 @@ export default function ProductModal({ action, handleClose }) {
     }
   };
 
-  return <Modal open={true} onClose={() => handleClose()}>
-    <ModalDialog>
-      <DialogTitle>PRODUCTOS</DialogTitle>
-      <DialogContent>Completá la información del producto.</DialogContent>
-      <form id="productForm" onSubmit={handleSubmit}>
-        <Stack spacing={2}>
-          <FormControl>
-            <FormLabel>Descripción</FormLabel>
-            <Input
-              onChange={handleChange}
-              value={elements.title}
-              id="title"
-              name="title"
-              autoFocus
-              required
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Tipo</FormLabel>
-            <RadioGroup name="radio-buttons-group">
-              <Radio
+  return <>
+    <Modal open={true} onClose={() => handleClose()}>
+      <ModalDialog>
+        <DialogTitle>PRODUCTOS</DialogTitle>
+        <DialogContent>Completá la información del producto.</DialogContent>
+        <form id="productForm" onSubmit={handleSubmit}>
+          <Stack spacing={2}>
+            <FormControl>
+              <FormLabel>Descripción</FormLabel>
+              <Input
                 onChange={handleChange}
-                name="product"
-                value="product"
-                label="Producto"
-                checked={elements.product}
+                value={elements.title}
+                id="title"
+                name="title"
+                autoFocus
+                required
               />
-              <Radio
+            </FormControl>
+            <FormControl>
+              <FormLabel>Tipo</FormLabel>
+              <RadioGroup name="radio-buttons-group">
+                <Radio
+                  onChange={handleChange}
+                  name="product"
+                  value="product"
+                  label="Producto"
+                  checked={elements.product}
+                />
+                <Radio
+                  onChange={handleChange}
+                  name="service"
+                  value="service"
+                  label="Servicio"
+                  checked={elements.service}
+                />
+              </RadioGroup>
+            </FormControl>
+            <FormControl>
+              <Box sx={{ display: "flex", gap: 3 }}>
+                <Checkbox
+                  onChange={handleChange}
+                  id="buy"
+                  name="buy"
+                  label="Compra"
+                  checked={elements.buy}
+                />
+                <Checkbox
+                  onChange={handleChange}
+                  id="sell"
+                  name="sell"
+                  label="Venta"
+                  checked={elements.sell}
+                />
+              </Box>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Stock</FormLabel>
+              <Input
                 onChange={handleChange}
-                name="service"
-                value="service"
-                label="Servicio"
-                checked={elements.service}
+                id="stock"
+                name="stock"
+                type="number"
+                placeholder="Stock"
+                value={elements.stock}
+                slotProps={{
+                  input: {
+                    min: 0,
+                    step: 1,
+                  },
+                }}
               />
-            </RadioGroup>
-          </FormControl>
-          <FormControl>
-            <Box sx={{ display: "flex", gap: 3 }}>
-              <Checkbox
-                onChange={handleChange}
-                id="buy"
-                name="buy"
-                label="Compra"
-                checked={elements.buy}
-              />
-              <Checkbox
-                onChange={handleChange}
-                id="sell"
-                name="sell"
-                label="Venta"
-                checked={elements.sell}
-              />
-            </Box>
-          </FormControl>
-          <FormControl>
-            <FormLabel>Stock</FormLabel>
-            <Input
-              onChange={handleChange}
-              id="stock"
-              name="stock"
-              type="number"
-              placeholder="Stock"
-              value={elements.stock}
-              slotProps={{
-                input: {
-                  min: 0,
-                  step: 1,
-                },
-              }}
-            />
-          </FormControl>
-          <Button type="submit">Ok</Button>
-        </Stack>
-      </form>
-    </ModalDialog>
-  </Modal>
+            </FormControl>
+            <Button type="submit">Ok</Button>
+          </Stack>
+        </form>
+      </ModalDialog>
+    </Modal>
+    {modalState.open && <Alert title="ALERTA" message={modalState.message} handleClose={handleCloseAlert} />}
+  </>
 }

@@ -3,10 +3,18 @@ import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../../state";
 
 import AccountingBoard from "../accounting-board"
+import Alert from "../modals/alert";
 
 function Sales() { // se re-rendiriza 3 veces
   const { state, fetchData } = useContext(GlobalContext)
   const [movements, setMovements] = useState([])
+  const [modalState, setAlertModal] = useState({ open: false, message: "" });
+
+  const handleClose = () => {
+    setAlertModal((prev) => {
+      return { ...prev, open: false }
+    })
+  };
 
   useEffect(() => {
     (async () => {
@@ -18,13 +26,17 @@ function Sales() { // se re-rendiriza 3 veces
       if (status == 200) {
         setMovements(movements.data?.rows);
       } else {
-        alert(movements)
+        setAlertModal({ open: true, message: movements.response })
       }
 
     })()
   }, [])
 
-  return <AccountingBoard location="ventas" title={"Ventas"}>{movements}</AccountingBoard>
+  return <>
+    <AccountingBoard location="ventas" title={"Ventas"}>{movements}</AccountingBoard>
+    {modalState.open && <Alert title="ALERTA" message={modalState.message} handleClose={handleClose} />}
+  </>
+
 }
 
 export default Sales

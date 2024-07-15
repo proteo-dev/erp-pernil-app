@@ -30,12 +30,18 @@ const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     const fetchData = async ({ method = "GET", data = {}, query = "", path }) => {
-        const response = await axios(`${apiBaseUrl}/${path}?${query}`, {
-            method,
-            data
-        });
+        try {
+            const response = await axios(`${apiBaseUrl}/${path}?${query}`, {
+                method,
+                data
+            });
 
-        return [response.data, response.status];
+            return [response.data, response.status];
+        } catch (error) {
+            const { data, status } = error.response
+
+            return [data, status]
+        }
     }
 
     const setState = (newState) => {

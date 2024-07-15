@@ -13,12 +13,13 @@ import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 
 import SearchModal from "./search-modal";
+import Alert from "./alert";
 
 import { GlobalContext } from "../../state";
 
 export default function MovementModal({ action, operation, handleClose }) {
-	const isSalesOperation = operation == "ventas"
-
+	const { fetchData, state } = useContext(GlobalContext);
+	const [modalState, setAlertModal] = useState({ open: false, message: "" });
 	const [elements, setElements] = useState({
 		amountPerUnit: 1,
 		amountToPaid: 1,
@@ -28,12 +29,18 @@ export default function MovementModal({ action, operation, handleClose }) {
 		ProductId: "",
 	});
 
-	const { fetchData, state } = useContext(GlobalContext);
+	const isSalesOperation = operation == "ventas"
+
+	const handleCloseAlert = () => {
+		setAlertModal((prev) => {
+			return { ...prev, open: false }
+		})
+	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		const data = {
+		const inputs = {
 			ProductId: elements.ProductId,
 			paymentMethod: elements.paymentMethod,
 			units: elements.units,
@@ -41,9 +48,9 @@ export default function MovementModal({ action, operation, handleClose }) {
 		};
 
 		if (operation == "ventas") {
-			data["ClientId"] = elements.agentId
+			inputs["ClientId"] = elements.agentId
 		} else {
-			data["SupplierId"] = elements.agentId
+			inputs["SupplierId"] = elements.agentId
 		}
 
 		let method = "POST";
@@ -54,13 +61,13 @@ export default function MovementModal({ action, operation, handleClose }) {
 			path = state.routes.movements + "/" + state.card_selected.id;
 		}
 
-		const [response, status] = await fetchData({ method, path, data });
+		const [data, status] = await fetchData({ method, path, inputs });
 
 		if (status == 201 || status == 200) {
 			handleClose();
 			location.replace("/");
 		} else {
-			alert(response);
+			setAlertModal({ open: true, message: data.response })
 		}
 	};
 
@@ -127,105 +134,108 @@ export default function MovementModal({ action, operation, handleClose }) {
 		}
 	}
 
-	return <Modal open={true} onClose={() => handleClose()}>
-		<ModalDialog>
-			<DialogTitle>Movimientos</DialogTitle>
-			<DialogContent>Completá la información del movimiento.</DialogContent>
-			<form id="movementForm" onSubmit={handleSubmit}>
-				<Stack spacing={2}>
-					<FormControl>
-						<FormLabel>Codigo producto</FormLabel>
-						<Input
-							onChange={handleChange}
-							value={elements.ProductId}
-							type="number"
-							id="product"
-							name="product"
-							autoFocus
-							required
-							endDecorator={<SearchModal catchSelectedItem={catchSelectedItem} />}
-						/>
-					</FormControl>
-					<FormControl>
-						<FormLabel>Codigo {isSalesOperation ? "cliente" : "proveedor"}</FormLabel>
-						<Input
-							onChange={handleChange}
-							value={elements.agentId}
-							id="agent"
-							name="agent"
-							type="number"
-							autoFocus
-							required
-							endDecorator={<SearchModal catchSelectedItem={catchSelectedItem} operation={operation} />}
-						/>
-					</FormControl>
-					<FormControl>
-						<FormLabel>Unidades</FormLabel>
-						<Input
-							onChange={handleChange}
-							id="units"
-							name="units"
-							type="number"
-							value={elements.units}
-							slotProps={
-								{
-									input: {
-										min: 1
+	return <>
+		<Modal open={true} onClose={() => handleClose()}>
+			<ModalDialog>
+				<DialogTitle>Movimientos</DialogTitle>
+				<DialogContent>Completá la información del movimiento.</DialogContent>
+				<form id="movementForm" onSubmit={handleSubmit}>
+					<Stack spacing={2}>
+						<FormControl>
+							<FormLabel>Codigo producto</FormLabel>
+							<Input
+								onChange={handleChange}
+								value={elements.ProductId}
+								type="number"
+								id="product"
+								name="product"
+								autoFocus
+								required
+								endDecorator={<SearchModal catchSelectedItem={catchSelectedItem} />}
+							/>
+						</FormControl>
+						<FormControl>
+							<FormLabel>Codigo {isSalesOperation ? "cliente" : "proveedor"}</FormLabel>
+							<Input
+								onChange={handleChange}
+								value={elements.agentId}
+								id="agent"
+								name="agent"
+								type="number"
+								autoFocus
+								required
+								endDecorator={<SearchModal catchSelectedItem={catchSelectedItem} operation={operation} />}
+							/>
+						</FormControl>
+						<FormControl>
+							<FormLabel>Unidades</FormLabel>
+							<Input
+								onChange={handleChange}
+								id="units"
+								name="units"
+								type="number"
+								value={elements.units}
+								slotProps={
+									{
+										input: {
+											min: 1
+										}
 									}
 								}
-							}
-						/>
-					</FormControl>
-					<FormControl>
-						<FormLabel>Monto X u.</FormLabel>
-						<Input
-							onChange={handleChange}
-							id="amountPerUnit"
-							name="amountPerUnit"
-							type="number"
-							startDecorator={"$"}
-							value={elements.amountPerUnit}
-							slotProps={
-								{
-									input: {
-										min: 1
+							/>
+						</FormControl>
+						<FormControl>
+							<FormLabel>Monto X u.</FormLabel>
+							<Input
+								onChange={handleChange}
+								id="amountPerUnit"
+								name="amountPerUnit"
+								type="number"
+								startDecorator={"$"}
+								value={elements.amountPerUnit}
+								slotProps={
+									{
+										input: {
+											min: 1
+										}
 									}
 								}
-							}
-						/>
-					</FormControl>
-					<FormControl>
-						<FormLabel>Monto total</FormLabel>
-						<Input
-							onChange={handleChange}
-							id="amountToPaid"
-							name="amountToPaid"
-							type="number"
-							startDecorator={"$"}
-							value={elements.amountToPaid}
-							slotProps={
-								{
-									input: {
-										min: 1
+							/>
+						</FormControl>
+						<FormControl>
+							<FormLabel>Monto total</FormLabel>
+							<Input
+								onChange={handleChange}
+								id="amountToPaid"
+								name="amountToPaid"
+								type="number"
+								startDecorator={"$"}
+								value={elements.amountToPaid}
+								slotProps={
+									{
+										input: {
+											min: 1
+										}
 									}
 								}
-							}
-						/>
-					</FormControl>
-					<FormControl>
-						<FormLabel>Método de pago</FormLabel>
-						<Select onChange={handleChange} defaultValue="cash">
-							<Option id="cash" value="cash">efectivo</Option>
-							<Option id="transfer" value="transfer">transferencia</Option>
-							<Option id="mp" value="mp">mercado pago</Option>
-							<Option id="creditCard" value="creditCard">tarjeta de credito</Option>
-							<Option id="debitCard" value="debitCard">tarjeta de debito</Option>
-						</Select>
-					</FormControl>
-					<Button type="submit">Ok</Button>
-				</Stack>
-			</form>
-		</ModalDialog>
-	</Modal>
+							/>
+						</FormControl>
+						<FormControl>
+							<FormLabel>Método de pago</FormLabel>
+							<Select onChange={handleChange} defaultValue="cash">
+								<Option id="cash" value="cash">efectivo</Option>
+								<Option id="transfer" value="transfer">transferencia</Option>
+								<Option id="mp" value="mp">mercado pago</Option>
+								<Option id="creditCard" value="creditCard">tarjeta de credito</Option>
+								<Option id="debitCard" value="debitCard">tarjeta de debito</Option>
+							</Select>
+						</FormControl>
+						<Button type="submit">Ok</Button>
+					</Stack>
+				</form>
+			</ModalDialog>
+		</Modal>
+		{modalState.open && <Alert title="ALERTA" message={modalState.message} handleClose={handleCloseAlert} />}
+	</>
 }
 
