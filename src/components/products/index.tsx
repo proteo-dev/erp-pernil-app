@@ -16,7 +16,7 @@ function Products() {
       });
 
       if (status == 200) {
-        setProducts(products.data);
+        setProducts(products.data?.rows);
       }
     })()
 

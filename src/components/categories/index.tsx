@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { GlobalContext } from "../../state";
 
-import CustomGrid from "../custom-panel/index"
+import CustomPanel from "../custom-panel/index"
 
 function Categories() {
   const { state, fetchData } = useContext(GlobalContext)
@@ -13,13 +13,13 @@ function Categories() {
       const [categories, status] = await fetchData({ path: state.routes.categories });
 
       if (status == 200) {
-        setCategories(categories.data);
+        setCategories(categories.data?.rows);
       }
 
     })()
   }, [])
 
-  return <CustomGrid resource={state.routes.categories} title={"Categorias"}>{categories}</CustomGrid >
+  return <CustomPanel resource={state.routes.categories} title={"Categorias"}>{categories}</CustomPanel >
 
 }
 

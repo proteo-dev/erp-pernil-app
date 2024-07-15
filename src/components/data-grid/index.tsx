@@ -16,6 +16,12 @@ const columnsEntity = [
   { field: 'name', headerName: 'Nombre', flex: 1 },
 ]
 
+function CustomNoRowsOverlay() {
+  return (
+    <Box sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: 'center', alignItems: "center" }}>No hay información para mostrar</Box>
+  );
+}
+
 export default function Grid({ handleSelect, operation }) {
   const { fetchData, state } = useContext(GlobalContext);
 
@@ -71,6 +77,7 @@ export default function Grid({ handleSelect, operation }) {
         filterMode="server"
         onFilterModelChange={onFilterChange}
         disableRowSelectionOnClick
+        slots={{ noRowsOverlay: CustomNoRowsOverlay }}
         onRowClick={handleSelect}
       />
     </Box>

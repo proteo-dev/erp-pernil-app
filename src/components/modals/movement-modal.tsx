@@ -23,7 +23,7 @@ export default function MovementModal({ action, operation, handleClose }) {
 		amountPerUnit: 1,
 		amountToPaid: 1,
 		units: 1,
-		paymentMethod: "",
+		paymentMethod: "efectivo",
 		agentId: "",
 		ProductId: "",
 	});
@@ -60,7 +60,7 @@ export default function MovementModal({ action, operation, handleClose }) {
 			handleClose();
 			location.replace("/");
 		} else {
-			console.log(response);
+			alert(response);
 		}
 	};
 

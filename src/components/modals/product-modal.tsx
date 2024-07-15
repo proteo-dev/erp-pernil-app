@@ -1,4 +1,4 @@
-import { useContext, useState, Fragment, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 
 import Button from "@mui/joy/Button";
 import FormControl from "@mui/joy/FormControl";
@@ -17,6 +17,7 @@ import Checkbox from "@mui/joy/Checkbox";
 import { GlobalContext } from "../../state";
 
 export default function ProductModal({ action, handleClose }) {
+  const { fetchData, state } = useContext(GlobalContext);
   const [elements, setElements] = useState({
     title: "",
     stock: 1,
@@ -26,33 +27,31 @@ export default function ProductModal({ action, handleClose }) {
     service: false,
   });
 
-  const { fetchData, state } = useContext(GlobalContext);
+  const getDataFromDb = async () => {
+    const [response, status] = await fetchData({
+      path: `products/${state.card_selected.id}`,
+    });
+
+    if (status == 200) {
+      const { name, stock, buy, sell, isService } = response.data;
+
+      setElements((prev) => {
+        return {
+          ...prev,
+          title: name,
+          stock,
+          buy,
+          sell,
+          service: isService,
+          product: !isService,
+        };
+      });
+    } else {
+      alert(response);
+    }
+  };
 
   useEffect(() => {
-    const getDataFromDb = async () => {
-      const [response, status] = await fetchData({
-        path: `products/${state.card_selected.id}`,
-      });
-
-      if (status == 200) {
-        const { name, stock, buy, sell, isService } = response.data;
-
-        setElements((prev) => {
-          return {
-            ...prev,
-            title: name,
-            stock,
-            buy,
-            sell,
-            service: isService,
-            product: !isService,
-          };
-        });
-      } else {
-        console.log(response);
-      }
-    };
-
     if (action == "GET") {
       getDataFromDb();
     }
@@ -69,6 +68,7 @@ export default function ProductModal({ action, handleClose }) {
       isService: formElements.service.checked,
       buy: formElements.buy.checked,
       sell: formElements.sell.checked,
+      CategoryId: state.card_selected.CategoryId,
       SubcategoryId: state.card_selected.id,
     };
 
@@ -82,7 +82,7 @@ export default function ProductModal({ action, handleClose }) {
 
     const [response, status] = await fetchData({ method, path, data });
 
-    if (status == 201 || status == 200) {
+    if (method == "POST" && status == 201 || method == "PATCH" && status == 200) {
       handleClose()
       location.replace("/");
     } else {
@@ -139,82 +139,80 @@ export default function ProductModal({ action, handleClose }) {
     }
   };
 
-  return <Fragment>
-    <Modal open={true} onClose={() => handleClose()}>
-      <ModalDialog>
-        <DialogTitle>PRODUCTOS</DialogTitle>
-        <DialogContent>Completá la información del producto.</DialogContent>
-        <form id="productForm" onSubmit={handleSubmit}>
-          <Stack spacing={2}>
-            <FormControl>
-              <FormLabel>Descripción</FormLabel>
-              <Input
+  return <Modal open={true} onClose={() => handleClose()}>
+    <ModalDialog>
+      <DialogTitle>PRODUCTOS</DialogTitle>
+      <DialogContent>Completá la información del producto.</DialogContent>
+      <form id="productForm" onSubmit={handleSubmit}>
+        <Stack spacing={2}>
+          <FormControl>
+            <FormLabel>Descripción</FormLabel>
+            <Input
+              onChange={handleChange}
+              value={elements.title}
+              id="title"
+              name="title"
+              autoFocus
+              required
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Tipo</FormLabel>
+            <RadioGroup name="radio-buttons-group">
+              <Radio
                 onChange={handleChange}
-                value={elements.title}
-                id="title"
-                name="title"
-                autoFocus
-                required
+                name="product"
+                value="product"
+                label="Producto"
+                checked={elements.product}
               />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Tipo</FormLabel>
-              <RadioGroup name="radio-buttons-group">
-                <Radio
-                  onChange={handleChange}
-                  name="product"
-                  value="product"
-                  label="Producto"
-                  checked={elements.product}
-                />
-                <Radio
-                  onChange={handleChange}
-                  name="service"
-                  value="service"
-                  label="Servicio"
-                  checked={elements.service}
-                />
-              </RadioGroup>
-            </FormControl>
-            <FormControl>
-              <Box sx={{ display: "flex", gap: 3 }}>
-                <Checkbox
-                  onChange={handleChange}
-                  id="buy"
-                  name="buy"
-                  label="Compra"
-                  checked={elements.buy}
-                />
-                <Checkbox
-                  onChange={handleChange}
-                  id="sell"
-                  name="sell"
-                  label="Venta"
-                  checked={elements.sell}
-                />
-              </Box>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Stock</FormLabel>
-              <Input
+              <Radio
                 onChange={handleChange}
-                id="stock"
-                name="stock"
-                type="number"
-                placeholder="Stock"
-                value={elements.stock}
-                slotProps={{
-                  input: {
-                    min: 0,
-                    step: 1,
-                  },
-                }}
+                name="service"
+                value="service"
+                label="Servicio"
+                checked={elements.service}
               />
-            </FormControl>
-            <Button type="submit">Ok</Button>
-          </Stack>
-        </form>
-      </ModalDialog>
-    </Modal>
-  </Fragment>
+            </RadioGroup>
+          </FormControl>
+          <FormControl>
+            <Box sx={{ display: "flex", gap: 3 }}>
+              <Checkbox
+                onChange={handleChange}
+                id="buy"
+                name="buy"
+                label="Compra"
+                checked={elements.buy}
+              />
+              <Checkbox
+                onChange={handleChange}
+                id="sell"
+                name="sell"
+                label="Venta"
+                checked={elements.sell}
+              />
+            </Box>
+          </FormControl>
+          <FormControl>
+            <FormLabel>Stock</FormLabel>
+            <Input
+              onChange={handleChange}
+              id="stock"
+              name="stock"
+              type="number"
+              placeholder="Stock"
+              value={elements.stock}
+              slotProps={{
+                input: {
+                  min: 0,
+                  step: 1,
+                },
+              }}
+            />
+          </FormControl>
+          <Button type="submit">Ok</Button>
+        </Stack>
+      </form>
+    </ModalDialog>
+  </Modal>
 }

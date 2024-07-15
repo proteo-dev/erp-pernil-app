@@ -1,15 +1,4 @@
-// const body: any = { name: inputEl.value };
-
-// if (path == State.Routes.subcategories) {
-// 	const ls = State.getState;
-// 	const CategoryId = ls.card_selected.id;
-
-// 	body.CategoryId = CategoryId;
-// }
-
-// State.fetchData({ path, method: "POST", body });
-
-import { useContext, useState, Fragment } from "react";
+import { useContext } from "react";
 
 import Button from "@mui/joy/Button";
 import FormControl from "@mui/joy/FormControl";
@@ -30,7 +19,6 @@ export default function InputModal({ resource, handleClose }) {
 		e.preventDefault()
 
 		const formElements = e.currentTarget.elements;
-
 		const data = {
 			name: formElements.name.value,
 		};
@@ -47,24 +35,22 @@ export default function InputModal({ resource, handleClose }) {
 		}
 	}
 
-	return <Fragment>
-		<Modal open={true} onClose={() => handleClose()}>
-			<ModalDialog>
-				<DialogTitle>{resource == state.routes.categories ? "CATEGORÍA" : "SUB-CATEGORÍA"}</DialogTitle>
-				<DialogContent>
-					{resource == state.routes.categories ? "Completá la información para crear la categoría." : "Completá la información para crear la subcategoría."}
-				</DialogContent>
-				<form onSubmit={handleSubmit}>
-					<Stack spacing={2}>
-						<FormControl>
-							<FormLabel>Nombre</FormLabel>
-							<Input id="name" name="name" autoFocus required />
-						</FormControl>
-						<Button type="submit">Ok</Button>
-					</Stack>
-				</form>
-			</ModalDialog>
-		</Modal>
-	</Fragment>
+	return <Modal open={true} onClose={() => handleClose()}>
+		<ModalDialog>
+			<DialogTitle>{resource == state.routes.categories ? "CATEGORÍA" : "SUB-CATEGORÍA"}</DialogTitle>
+			<DialogContent>
+				Completá la información para crear la {resource == state.routes.categories ? "categoría." : "subcategoría."}
+			</DialogContent>
+			<form onSubmit={handleSubmit}>
+				<Stack spacing={2}>
+					<FormControl>
+						<FormLabel>Nombre</FormLabel>
+						<Input id="name" name="name" autoFocus required />
+					</FormControl>
+					<Button type="submit">Ok</Button>
+				</Stack>
+			</form>
+		</ModalDialog>
+	</Modal>
 }
 

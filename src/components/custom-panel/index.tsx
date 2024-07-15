@@ -36,18 +36,30 @@ function Panel({ resource, title, children = [] }) {
       <div className="background">{title}</div>
       <div className="panel">
         {children.map((el) => (
-          <div onClick={(e) => { setState({ card_selected: e.target }); changePanel(); }} key={el.id} id={el.id} className={"item"}>{el.name}</div>
+          <div
+            onClick={(e) => {
+              const { id, dataset } = e.target as HTMLElement
+
+              setState({ card_selected: { id, CategoryId: dataset?.categoryid } });
+              changePanel();
+            }}
+            key={el.id}
+            id={el.id}
+            data-categoryid={el.CategoryId} // no puedo acceder cuando paso de pagina
+            className={"item"}>
+            {el.name}
+          </div>
         ))}
       </div>
       <div
         className="button"
         onClick={() => setModal((prev) => {
-          return { ...prev, open: true }
+          return { ...prev, action: "POST", open: true }
         })}>
         Crear
       </div>
       {modalState.open && (resource == state.routes.products ? <ProductModal action={modalState.action} handleClose={handleClose} /> : <InputModal resource={resource} handleClose={handleClose} />)}
-    </div>
+    </div >
   );
 }
 

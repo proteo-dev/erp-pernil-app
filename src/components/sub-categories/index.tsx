@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { GlobalContext } from "../../state";
 
-import CustomGrid from "../custom-panel/index"
+import CustomPanel from "../custom-panel/index"
 
 function SubCategories() {
   const { state, fetchData } = useContext(GlobalContext)
@@ -16,14 +16,14 @@ function SubCategories() {
       });
 
       if (status == 200) {
-        setSubCategories(subCategories.data);
+        setSubCategories(subCategories.data?.rows);
       }
 
     })()
 
   }, [])
 
-  return <CustomGrid resource={state.routes.subCategories} title={"Sub categorias"}>{subCategories}</CustomGrid >
+  return <CustomPanel resource={state.routes.subCategories} title={"Sub categorias"}>{subCategories}</CustomPanel >
 }
 
 export default SubCategories
