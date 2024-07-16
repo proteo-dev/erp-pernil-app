@@ -10,7 +10,7 @@ function Sales() { // se re-rendiriza 3 veces
   const [movements, setMovements] = useState([])
   const [modalState, setAlertModal] = useState({ open: false, message: "" });
 
-  const handleClose = () => {
+  const handleCloseAlert = () => {
     setAlertModal((prev) => {
       return { ...prev, open: false }
     })
@@ -34,7 +34,7 @@ function Sales() { // se re-rendiriza 3 veces
 
   return <>
     <AccountingBoard location="ventas" title={"Ventas"}>{movements}</AccountingBoard>
-    {modalState.open && <Alert title="ALERTA" message={modalState.message} handleClose={handleClose} />}
+    {modalState.open && <Alert title="ALERTA" message={modalState.message} handleClose={handleCloseAlert} />}
   </>
 
 }

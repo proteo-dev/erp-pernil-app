@@ -73,12 +73,12 @@ export default function ProductModal({ action, handleClose }) {
 
     const data = {
       name: formElements.title.value,
-      stock: formElements.stock.value,
+      stock: parseInt(formElements.stock.value),
       isService: formElements.service.checked,
       buy: formElements.buy.checked,
       sell: formElements.sell.checked,
-      CategoryId: state.card_selected.CategoryId,
-      SubcategoryId: state.card_selected.id,
+      CategoryId: parseInt(state.card_selected.CategoryId),
+      SubcategoryId: parseInt(state.card_selected.id),
     };
 
     let method = "POST";

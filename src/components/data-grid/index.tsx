@@ -3,6 +3,8 @@ import { useEffect, useState, useContext } from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 
+import Alert from "../modals/alert";
+
 import { GlobalContext } from "../../state";
 
 const columnsProd = [
@@ -24,12 +26,18 @@ function CustomNoRowsOverlay() {
 
 export default function Grid({ handleSelect, operation }) {
   const { fetchData, state } = useContext(GlobalContext);
-
+  const [modalState, setAlertModal] = useState({ open: false, message: "" });
   const [data, setData] = useState({ count: 0, rows: [] });
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 30,
   });
+
+  const handleCloseAlert = () => {
+    setAlertModal((prev) => {
+      return { ...prev, open: false }
+    })
+  };
 
   const getDataFromDb = async ({ field = undefined, value = undefined }) => {
     const { page, pageSize } = paginationModel
@@ -45,12 +53,12 @@ export default function Grid({ handleSelect, operation }) {
     else if (operation == "compras") path = state.routes.suppliers
     else path = state.routes.products
 
-    const [response, status] = await fetchData({ path, query: `offset=${offset}&limit=${pageSize}&${query}` });
+    const [data, status] = await fetchData({ path, query: `offset=${offset}&limit=${pageSize}&${query}` });
 
     if (status == 200) {
-      setData(response.data);
+      setData(data.data);
     } else {
-      alert(response);
+      setAlertModal({ open: true, message: data.response })
     }
   };
 
@@ -62,7 +70,7 @@ export default function Grid({ handleSelect, operation }) {
     if (e?.items[0]?.value) getDataFromDb(e.items[0]) // solamente si le coloqué un valor al filtro hace la busqueda
   }
 
-  return (
+  return <>
     <Box sx={{
       height: "100%", width: '100%', backgroundColor: "rgba(255, 255, 255, 0.63)"
     }}>
@@ -81,5 +89,7 @@ export default function Grid({ handleSelect, operation }) {
         onRowClick={handleSelect}
       />
     </Box>
-  );
+    {modalState.open && <Alert title="ALERTA" message={modalState.message} handleClose={handleCloseAlert} />}
+  </>
+
 }
