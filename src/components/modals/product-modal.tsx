@@ -23,17 +23,19 @@ export default function ProductModal({ action, handleClose }) {
   const [modalState, setAlertModal] = useState({ open: false, message: "" });
   const [elements, setElements] = useState({
     title: "",
+    cost: 0,
+    profit: 0,
     stock: 1,
     buy: true,
     sell: true,
-    product: false,
+    product: true,
     service: false,
   });
 
   const handleCloseAlert = () => {
     setAlertModal((prev) => {
-      return { ...prev, open: false }
-    })
+      return { ...prev, open: false };
+    });
   };
 
   const getDataFromDb = async () => {
@@ -42,13 +44,15 @@ export default function ProductModal({ action, handleClose }) {
     });
 
     if (status == 200) {
-      const { name, stock, buy, sell, isService } = response.data;
+      const { name, stock, cost, profit, buy, sell, isService } = response.data;
 
       setElements((prev) => {
         return {
           ...prev,
           title: name,
           stock,
+          cost,
+          profit,
           buy,
           sell,
           service: isService,
@@ -91,11 +95,14 @@ export default function ProductModal({ action, handleClose }) {
 
     const [product, status] = await fetchData({ method, path, data });
 
-    if (method == "POST" && status == 201 || method == "PATCH" && status == 200) {
-      handleClose()
+    if (
+      (method == "POST" && status == 201) ||
+      (method == "PATCH" && status == 200)
+    ) {
+      handleClose();
       location.replace("/");
     } else {
-      setAlertModal({ open: true, message: product.response })
+      setAlertModal({ open: true, message: product.response });
     }
   };
 
@@ -145,86 +152,164 @@ export default function ProductModal({ action, handleClose }) {
           };
         });
         break;
+      case "cost":
+        setElements((prev) => {
+          return {
+            ...prev,
+            cost: e.target.value,
+          };
+        });
+        break;
+      case "profit":
+        setElements((prev) => {
+          return {
+            ...prev,
+            profit: e.target.value,
+          };
+        });
+        break;
     }
   };
 
-  return <>
-    <Modal open={true} onClose={() => handleClose()}>
-      <ModalDialog>
-        <DialogTitle>PRODUCTOS</DialogTitle>
-        <DialogContent>Completá la información del producto.</DialogContent>
-        <form id="productForm" onSubmit={handleSubmit}>
-          <Stack spacing={2}>
-            <FormControl>
-              <FormLabel>Descripción</FormLabel>
-              <Input
-                onChange={handleChange}
-                value={elements.title}
-                id="title"
-                name="title"
-                autoFocus
-                required
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Tipo</FormLabel>
-              <RadioGroup name="radio-buttons-group">
-                <Radio
+  return (
+    // ver porque use los estaods para los onChange
+    <>
+      <Modal open={true} onClose={() => handleClose()}>
+        <ModalDialog sx={{ width: "450px" }}>
+          <DialogTitle>PRODUCTOS</DialogTitle>
+          <DialogContent>Completá la información del producto.</DialogContent>
+          <form id="productForm" onSubmit={handleSubmit}>
+            <Stack spacing={2}>
+              <FormControl>
+                <FormLabel>Descripción</FormLabel>
+                <Input
                   onChange={handleChange}
-                  name="product"
-                  value="product"
-                  label="Producto"
-                  checked={elements.product}
+                  value={elements.title}
+                  id="title"
+                  name="title"
+                  placeholder="Descripción del articulo"
+                  autoFocus
+                  required
                 />
-                <Radio
-                  onChange={handleChange}
-                  name="service"
-                  value="service"
-                  label="Servicio"
-                  checked={elements.service}
-                />
-              </RadioGroup>
-            </FormControl>
-            <FormControl>
-              <Box sx={{ display: "flex", gap: 3 }}>
-                <Checkbox
-                  onChange={handleChange}
-                  id="buy"
-                  name="buy"
-                  label="Compra"
-                  checked={elements.buy}
-                />
-                <Checkbox
-                  onChange={handleChange}
-                  id="sell"
-                  name="sell"
-                  label="Venta"
-                  checked={elements.sell}
-                />
-              </Box>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Stock</FormLabel>
-              <Input
-                onChange={handleChange}
-                id="stock"
-                name="stock"
-                type="number"
-                placeholder="Stock"
-                value={elements.stock}
-                slotProps={{
-                  input: {
-                    min: 0,
-                    step: 1,
-                  },
+              </FormControl>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
                 }}
-              />
-            </FormControl>
-            <Button type="submit">Ok</Button>
-          </Stack>
-        </form>
-      </ModalDialog>
-    </Modal>
-    {modalState.open && <Alert title="ALERTA" message={modalState.message} handleClose={handleCloseAlert} />}
-  </>
+              >
+                <FormControl>
+                  <FormLabel>Tipo</FormLabel>
+                  <RadioGroup name="radio-buttons-group">
+                    <Radio
+                      size="lg"
+                      name="product"
+                      value="product"
+                      label="Producto"
+                      checked={elements.product}
+                      onChange={handleChange}
+                    />
+                    <Radio
+                      size="lg"
+                      name="service"
+                      value="service"
+                      label="Servicio"
+                      checked={elements.service}
+                      onChange={handleChange}
+                    />
+                  </RadioGroup>
+                </FormControl>
+
+                <Box
+                  sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}
+                >
+                  <FormControl>
+                    <FormLabel>Costo</FormLabel>
+                    <Input
+                      onChange={handleChange}
+                      id="cost"
+                      name="cost"
+                      type="number"
+                      placeholder="Monto en $"
+                      value={elements.cost}
+                      slotProps={{
+                        input: {
+                          min: 0,
+                        },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Ganancia</FormLabel>
+                    <Input
+                      onChange={handleChange}
+                      id="profit"
+                      name="profit"
+                      type="number"
+                      placeholder="Monto en %"
+                      value={elements.profit}
+                      slotProps={{
+                        input: {
+                          min: 0,
+                        },
+                      }}
+                    />
+                  </FormControl>
+                </Box>
+              </Box>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <FormControl>
+                  <Box
+                    sx={{ display: "flex", gap: 2, flexDirection: "column" }}
+                  >
+                    <Checkbox
+                      size="lg"
+                      id="buy"
+                      name="buy"
+                      label="Compra"
+                      checked={elements.buy}
+                      onChange={handleChange}
+                    />
+                    <Checkbox
+                      size="lg"
+                      id="sell"
+                      name="sell"
+                      label="Venta"
+                      checked={elements.sell}
+                      onChange={handleChange}
+                    />
+                  </Box>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Stock</FormLabel>
+                  <Input
+                    onChange={handleChange}
+                    id="stock"
+                    name="stock"
+                    type="number"
+                    placeholder="Unidades"
+                    value={elements.stock}
+                    slotProps={{
+                      input: {
+                        min: 0,
+                        step: 1,
+                      },
+                    }}
+                  />
+                </FormControl>
+              </Box>
+              <Button type="submit">Ok</Button>
+            </Stack>
+          </form>
+        </ModalDialog>
+      </Modal>
+      {modalState.open && (
+        <Alert
+          title="ALERTA"
+          message={modalState.message}
+          handleClose={handleCloseAlert}
+        />
+      )}
+    </>
+  );
 }

@@ -18,7 +18,7 @@ function Panel({ resource, title, children = [] }) {
         navigate("/productos");
         break;
       case state.routes.products:
-        setModal({ action: "GET", open: true })
+        setModal({ action: "GET", open: true });
         break;
 
       default:
@@ -27,9 +27,10 @@ function Panel({ resource, title, children = [] }) {
     }
   };
 
-  const handleClose = () => setModal((prev) => {
-    return { ...prev, open: false }
-  })
+  const handleClose = () =>
+    setModal((prev) => {
+      return { ...prev, open: false };
+    });
 
   return (
     <div className="container">
@@ -38,28 +39,39 @@ function Panel({ resource, title, children = [] }) {
         {children.map((el) => (
           <div
             onClick={(e) => {
-              const { id, dataset } = e.target as HTMLElement
+              const { id, dataset } = e.target as HTMLElement;
 
-              setState({ card_selected: { id, CategoryId: dataset?.categoryid } });
+              setState({
+                card_selected: { id, CategoryId: dataset?.categoryid },
+              });
               changePanel();
             }}
             key={el.id}
             id={el.id}
-            data-categoryid={el.CategoryId} // no puedo acceder cuando paso de pagina
-            className={"item"}>
+            data-categoryid={el.CategoryId}
+            className={"item"}
+          >
             {el.name}
           </div>
         ))}
       </div>
       <div
         className="button"
-        onClick={() => setModal((prev) => {
-          return { ...prev, action: "POST", open: true }
-        })}>
+        onClick={() =>
+          setModal((prev) => {
+            return { ...prev, action: "POST", open: true };
+          })
+        }
+      >
         Crear
       </div>
-      {modalState.open && (resource == state.routes.products ? <ProductModal action={modalState.action} handleClose={handleClose} /> : <InputModal resource={resource} handleClose={handleClose} />)}
-    </div >
+      {modalState.open &&
+        (resource == state.routes.products ? (
+          <ProductModal action={modalState.action} handleClose={handleClose} />
+        ) : (
+          <InputModal resource={resource} handleClose={handleClose} />
+        ))}
+    </div>
   );
 }
 

@@ -1,26 +1,58 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext } from "react";
 
-import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
+import Box from "@mui/material/Box";
+import { DataGrid } from "@mui/x-data-grid";
 
 import Alert from "../modals/alert";
 
 import { GlobalContext } from "../../state";
 
 const columnsProd = [
-  { field: 'id', headerName: 'Código', flex: 0.2 },
-  { field: 'stock', headerName: 'Stock', flex: 0.2 },
-  { field: 'name', headerName: 'Nombre', flex: 1 },
-] // agregar categorias,subcat, precios, fecha modificacion
+  { field: "id", headerName: "Código", flex: 0.2 },
+  { field: "stock", headerName: "Stock", flex: 0.2, filterable: false },
+  { field: "name", headerName: "Nombre", flex: 1 },
+  {
+    field: "Category",
+    headerName: "Categoría",
+    flex: 0.3,
+    filterable: false,
+    valueGetter: (value: { name: string }) => value?.name,
+  },
+  {
+    field: "Subcategory",
+    headerName: "Subcategoría",
+    flex: 0.3,
+    minWidth: "100px",
+    filterable: false,
+    valueGetter: (value: { name: string }) => value?.name,
+  },
+  {
+    field: "updatedAt",
+    headerName: "Fecha modificación",
+    flex: 0.4,
+    filterable: false,
+    valueGetter: (value: string) => value?.replace("T", " | ").split(".")[0], // Formateo para dejar una fecha de fácil lectura
+  },
+]; // agregar precios
 
 const columnsEntity = [
-  { field: 'id', headerName: 'Código', flex: 0.2 },
-  { field: 'name', headerName: 'Nombre', flex: 1 },
-]
+  { field: "id", headerName: "Código", flex: 0.2 },
+  { field: "name", headerName: "Nombre", flex: 1 },
+];
 
 function CustomNoRowsOverlay() {
   return (
-    <Box sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: 'center', alignItems: "center" }}>No hay información para mostrar</Box>
+    <Box
+      sx={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      No hay información para mostrar
+    </Box>
   );
 }
 
@@ -35,61 +67,75 @@ export default function Grid({ handleSelect, operation }) {
 
   const handleCloseAlert = () => {
     setAlertModal((prev) => {
-      return { ...prev, open: false }
-    })
+      return { ...prev, open: false };
+    });
   };
 
-  const getDataFromDb = async ({ field = undefined, value = undefined }) => {
-    const { page, pageSize } = paginationModel
+  const getDataFromDb = async ({ field = "", value = "" }) => {
+    const { page, pageSize } = paginationModel;
 
-    const offset = page * pageSize
+    const offset = page * pageSize;
 
-    let query = ""
-    if (field) query = `${field}=${value}` // valido que me manden para construir una query y la construyo
+    let path: string;
 
-    let path: string
+    let query = "";
+    if (value) query = `${field}=${value}`; // valido que me manden para construir una query y la construyo
 
-    if (operation == "ventas") path = state.routes.clients
-    else if (operation == "compras") path = state.routes.suppliers
-    else path = state.routes.products
+    if (operation == "ventas") path = state.routes.clients;
+    else if (operation == "compras") path = state.routes.suppliers;
+    else path = state.routes.products;
 
-    const [data, status] = await fetchData({ path, query: `offset=${offset}&limit=${pageSize}&${query}` });
+    const [data, status] = await fetchData({
+      path,
+      query: `offset=${offset}&limit=${pageSize}&${query}`,
+    });
 
     if (status == 200) {
       setData(data.data);
     } else {
-      setAlertModal({ open: true, message: data.response })
+      setAlertModal({ open: true, message: data.response });
     }
   };
 
   useEffect(() => {
-    getDataFromDb({})
-  }, [paginationModel])
+    getDataFromDb({});
+  }, [paginationModel]);
 
   const onFilterChange = (e) => {
-    if (e?.items[0]?.value) getDataFromDb(e.items[0]) // solamente si le coloqué un valor al filtro hace la busqueda
-  }
+    getDataFromDb(e.items[0] || {}); // si no le coloqué un valor al filtro elimina la query
+  };
 
-  return <>
-    <Box sx={{
-      height: "100%", width: '100%', backgroundColor: "rgba(255, 255, 255, 0.63)"
-    }}>
-      <DataGrid
-        rows={data.rows}
-        columns={!operation ? columnsProd : columnsEntity}
-        pageSizeOptions={[30]}
-        paginationModel={paginationModel}
-        paginationMode='server'
-        rowCount={data.count}
-        onPaginationModelChange={setPaginationModel}
-        filterMode="server"
-        onFilterModelChange={onFilterChange}
-        disableRowSelectionOnClick
-        slots={{ noRowsOverlay: CustomNoRowsOverlay }}
-        onRowClick={handleSelect}
-      />
-    </Box>
-    {modalState.open && <Alert title="ALERTA" message={modalState.message} handleClose={handleCloseAlert} />}
-  </>
-
+  return (
+    <>
+      <Box
+        sx={{
+          height: "100%",
+          width: "100%",
+          backgroundColor: "rgba(255, 255, 255, 0.63)",
+        }}
+      >
+        <DataGrid
+          rows={data.rows}
+          columns={!operation ? columnsProd : columnsEntity}
+          pageSizeOptions={[30]}
+          paginationModel={paginationModel}
+          paginationMode="server"
+          rowCount={data.count}
+          onPaginationModelChange={setPaginationModel}
+          filterMode="server"
+          onFilterModelChange={onFilterChange}
+          disableRowSelectionOnClick
+          slots={{ noRowsOverlay: CustomNoRowsOverlay }}
+          onRowClick={handleSelect}
+        />
+      </Box>
+      {modalState.open && (
+        <Alert
+          title="ALERTA"
+          message={modalState.message}
+          handleClose={handleCloseAlert}
+        />
+      )}
+    </>
+  );
 }
