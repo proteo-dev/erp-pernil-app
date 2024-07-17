@@ -31,7 +31,7 @@ const columnsProd = [
     headerName: "Fecha modificación",
     flex: 0.4,
     filterable: false,
-    valueGetter: (value: string) => value?.replace("T", " | ").split(".")[0], // Formateo para dejar una fecha de fácil lectura
+    valueGetter: (value: string) => new Date(value).toLocaleString("es-AR"),
   },
 ]; // agregar precios
 
@@ -71,7 +71,10 @@ export default function Grid({ handleSelect, operation }) {
     });
   };
 
-  const getDataFromDb = async ({ field = "", value = "" }) => {
+  const getDataFromDb = async ({
+    field: filterField = "",
+    value: filterValue = "",
+  }) => {
     const { page, pageSize } = paginationModel;
 
     const offset = page * pageSize;
@@ -79,11 +82,24 @@ export default function Grid({ handleSelect, operation }) {
     let path: string;
 
     let query = "";
-    if (value) query = `${field}=${value}`; // valido que me manden para construir una query y la construyo
+    const field =
+      location.pathname.replace("/", "") == "ventas" ? "sell" : "buy"; // verifico donde estoy para solicitar productos de ventas o compras
 
-    if (operation == "ventas") path = state.routes.clients;
-    else if (operation == "compras") path = state.routes.suppliers;
-    else path = state.routes.products;
+    if (filterValue) query = `${filterField}=${filterValue}&`; // valido si me llegaron datos de un filtro y construyo la query
+
+    switch (operation) {
+      case "ventas":
+        path = state.routes.clients;
+        break;
+      case "compras":
+        path = state.routes.suppliers;
+        break;
+      case "productos":
+        query += `${field}=true`;
+
+        path = state.routes.products;
+        break;
+    }
 
     const [data, status] = await fetchData({
       path,
