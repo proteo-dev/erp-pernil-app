@@ -13,7 +13,7 @@ export default function SearchModal({ catchSelectedItem, operation }) {
   const [open, setOpen] = useState(false);
 
   const handleSelect = (e) => {
-    catchSelectedItem({ id: e.id, operation });
+    catchSelectedItem({ data: e.row, operation });
     setOpen(false);
   };
 

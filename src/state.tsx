@@ -41,9 +41,16 @@ const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
       if (error.code == "ERR_NETWORK") {
         return [{ response: "No se pudo conectar con el servidor" }, 500];
       }
+
+      if (!error.response) {
+        console.log(error.message);
+
+        return [error.message, null];
+      }
+
       const { data, status } = error.response;
 
-      return [data, status];
+      return [data.response, status];
     }
   };
 

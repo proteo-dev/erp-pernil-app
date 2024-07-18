@@ -28,7 +28,7 @@ function Movements() {
       if (status == 200) {
         setMovements(movements.data?.rows);
       } else {
-        setAlertModal({ open: true, message: movements.response });
+        setAlertModal({ open: true, message: movements });
       }
     })();
   }, []);

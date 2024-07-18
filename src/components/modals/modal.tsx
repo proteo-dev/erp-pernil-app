@@ -45,7 +45,7 @@ export default function InputModal({ resource, handleClose }) {
       handleClose();
       location.replace("/");
     } else {
-      setAlertModal({ open: true, message: data.response });
+      setAlertModal({ open: true, message: data });
     }
   };
 

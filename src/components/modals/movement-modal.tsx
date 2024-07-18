@@ -20,6 +20,8 @@ import { GlobalContext } from "../../state";
 export default function MovementModal({ action, operation, handleClose }) {
   const { fetchData, state } = useContext(GlobalContext);
   const [modalState, setAlertModal] = useState({ open: false, message: "" });
+  const [isDataVisible, setDataVisible] = useState(false);
+
   const [elements, setElements] = useState({
     amountPerUnit: 1,
     amountToPaid: 1,
@@ -67,11 +69,11 @@ export default function MovementModal({ action, operation, handleClose }) {
       handleClose();
       location.replace("/");
     } else {
-      setAlertModal({ open: true, message: data.response });
+      setAlertModal({ open: true, message: data });
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const value = e.target.name || e.target.role;
 
     switch (value) {
@@ -83,6 +85,7 @@ export default function MovementModal({ action, operation, handleClose }) {
           };
         });
         break;
+
       case "product":
         setElements((prev) => {
           return {
@@ -90,7 +93,15 @@ export default function MovementModal({ action, operation, handleClose }) {
             ProductId: e.target.value,
           };
         });
+
+        if (!parseInt(e.target.value)) {
+          setDataVisible(false);
+        } else {
+          setDataVisible(true);
+        }
+
         break;
+
       case "amountPerUnit":
         setElements((prev) => {
           return {
@@ -100,6 +111,7 @@ export default function MovementModal({ action, operation, handleClose }) {
           };
         });
         break;
+
       case "amountToPaid":
         setElements((prev) => {
           return {
@@ -109,6 +121,7 @@ export default function MovementModal({ action, operation, handleClose }) {
           };
         });
         break;
+
       case "units":
         setElements((prev) => {
           return {
@@ -118,6 +131,7 @@ export default function MovementModal({ action, operation, handleClose }) {
           };
         });
         break;
+
       case "option":
         setElements((prev) => {
           return { ...prev, paymentMethod: e.target.innerText };
@@ -126,15 +140,27 @@ export default function MovementModal({ action, operation, handleClose }) {
     }
   };
 
-  const catchSelectedItem = ({ id, operation }) => {
-    if (!operation) {
-      setElements((prev) => {
-        return { ...prev, ProductId: id };
-      });
-    } else {
-      setElements((prev) => {
-        return { ...prev, agentId: id };
-      });
+  const catchSelectedItem = ({ data, operation }) => {
+    switch (operation) {
+      case "productos":
+        setElements((prev) => {
+          return {
+            ...prev,
+            ProductId: data.id,
+            amountPerUnit: data.sellPrice,
+            amountToPaid: data.sellPrice * prev.units,
+          };
+        });
+
+        setDataVisible(true);
+        break;
+
+      case "ventas" || "compras":
+        setElements((prev) => {
+          return { ...prev, agentId: data.id };
+        });
+
+        break;
     }
   };
 
@@ -184,74 +210,78 @@ export default function MovementModal({ action, operation, handleClose }) {
                   }
                 />
               </FormControl>
-              <FormControl>
-                <FormLabel>Unidades</FormLabel>
-                <Input
-                  onChange={handleChange}
-                  id="units"
-                  name="units"
-                  type="number"
-                  value={elements.units}
-                  slotProps={{
-                    input: {
-                      min: 1,
-                    },
-                  }}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Monto X u.</FormLabel>
-                <Input
-                  onChange={handleChange}
-                  id="amountPerUnit"
-                  name="amountPerUnit"
-                  type="number"
-                  startDecorator={"$"}
-                  value={elements.amountPerUnit}
-                  slotProps={{
-                    input: {
-                      min: 1,
-                    },
-                  }}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Monto total</FormLabel>
-                <Input
-                  onChange={handleChange}
-                  id="amountToPaid"
-                  name="amountToPaid"
-                  type="number"
-                  startDecorator={"$"}
-                  value={elements.amountToPaid}
-                  slotProps={{
-                    input: {
-                      min: 1,
-                    },
-                  }}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Método de pago</FormLabel>
-                <Select onChange={handleChange} defaultValue="cash">
-                  <Option id="cash" value="cash">
-                    efectivo
-                  </Option>
-                  <Option id="transfer" value="transfer">
-                    transferencia
-                  </Option>
-                  <Option id="mp" value="mp">
-                    mercado pago
-                  </Option>
-                  <Option id="creditCard" value="creditCard">
-                    tarjeta de credito
-                  </Option>
-                  <Option id="debitCard" value="debitCard">
-                    tarjeta de debito
-                  </Option>
-                </Select>
-              </FormControl>
-              <Button type="submit">Ok</Button>
+              {isDataVisible && (
+                <>
+                  <FormControl>
+                    <FormLabel>Unidades</FormLabel>
+                    <Input
+                      onChange={handleChange}
+                      id="units"
+                      name="units"
+                      type="number"
+                      value={elements.units}
+                      slotProps={{
+                        input: {
+                          min: 1,
+                        },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Monto X u.</FormLabel>
+                    <Input
+                      onChange={handleChange}
+                      id="amountPerUnit"
+                      name="amountPerUnit"
+                      type="number"
+                      startDecorator={"$"}
+                      value={elements.amountPerUnit}
+                      slotProps={{
+                        input: {
+                          min: 1,
+                        },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Monto total</FormLabel>
+                    <Input
+                      onChange={handleChange}
+                      id="amountToPaid"
+                      name="amountToPaid"
+                      type="number"
+                      startDecorator={"$"}
+                      value={elements.amountToPaid}
+                      slotProps={{
+                        input: {
+                          min: 1,
+                        },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Método de pago</FormLabel>
+                    <Select onChange={handleChange} defaultValue="cash">
+                      <Option id="cash" value="cash">
+                        efectivo
+                      </Option>
+                      <Option id="transfer" value="transfer">
+                        transferencia
+                      </Option>
+                      <Option id="mp" value="mp">
+                        mercado pago
+                      </Option>
+                      <Option id="creditCard" value="creditCard">
+                        tarjeta de credito
+                      </Option>
+                      <Option id="debitCard" value="debitCard">
+                        tarjeta de debito
+                      </Option>
+                    </Select>
+                  </FormControl>
+                  <Button type="submit">Ok</Button>
+                </>
+              )}
             </Stack>
           </form>
         </ModalDialog>

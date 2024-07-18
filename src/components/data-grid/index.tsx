@@ -9,8 +9,9 @@ import { GlobalContext } from "../../state";
 
 const columnsProd = [
   { field: "id", headerName: "Código", flex: 0.2 },
-  { field: "stock", headerName: "Stock", flex: 0.2, filterable: false },
   { field: "name", headerName: "Nombre", flex: 1 },
+  { field: "stock", headerName: "Stock", flex: 0.2, filterable: false },
+  { field: "sellPrice", headerName: "Precio", flex: 0.2, filterable: false },
   {
     field: "Category",
     headerName: "Categoría",
@@ -109,7 +110,7 @@ export default function Grid({ handleSelect, operation }) {
     if (status == 200) {
       setData(data.data);
     } else {
-      setAlertModal({ open: true, message: data.response });
+      setAlertModal({ open: true, message: data });
     }
   };
 
@@ -132,7 +133,7 @@ export default function Grid({ handleSelect, operation }) {
       >
         <DataGrid
           rows={data.rows}
-          columns={!operation ? columnsProd : columnsEntity}
+          columns={operation == "productos" ? columnsProd : columnsEntity}
           pageSizeOptions={[30]}
           paginationModel={paginationModel}
           paginationMode="server"

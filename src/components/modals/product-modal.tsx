@@ -81,6 +81,8 @@ export default function ProductModal({ action, handleClose }) {
       isService: formElements.service.checked,
       buy: formElements.buy.checked,
       sell: formElements.sell.checked,
+      cost: formElements.cost.value,
+      profit: formElements.profit.value,
       CategoryId: parseInt(state.card_selected.CategoryId),
       SubcategoryId: parseInt(state.card_selected.id),
     };
@@ -102,7 +104,7 @@ export default function ProductModal({ action, handleClose }) {
       handleClose();
       location.replace("/");
     } else {
-      setAlertModal({ open: true, message: product.response });
+      setAlertModal({ open: true, message: product });
     }
   };
 
@@ -230,7 +232,7 @@ export default function ProductModal({ action, handleClose }) {
                       id="cost"
                       name="cost"
                       type="number"
-                      placeholder="Monto en $"
+                      placeholder="Monto"
                       value={elements.cost}
                       slotProps={{
                         input: {
@@ -240,7 +242,7 @@ export default function ProductModal({ action, handleClose }) {
                     />
                   </FormControl>
                   <FormControl>
-                    <FormLabel>Ganancia</FormLabel>
+                    <FormLabel>% Ganancia</FormLabel>
                     <Input
                       onChange={handleChange}
                       id="profit"
