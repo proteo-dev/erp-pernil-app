@@ -1,21 +1,32 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import LoginPage from "../pages/login/login";
-import HomePage from "../pages/home";
+import Layout from "../components/layout";
 import Movements from "../pages/movements";
-import Categories from "../components/categories/index";
-import SubCategories from "../components/sub-categories/index";
-import Products from "../components/products";
+import Home from "../pages/home";
 
 const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
   {
     path: "/",
-    element: <HomePage />,
+    element: <Layout />,
     children: [
-      { path: "/", element: <Categories /> },
-      { path: "/subcategorias", element: <SubCategories /> },
-      { path: "/productos", element: <Products /> },
+      {
+        path: "/",
+        element: <Home />,
+        children: [
+          {
+            path: "/:categoryId/subcategorias",
+            element: <Home />,
+            children: [
+              {
+                path: "/:categoryId/subcategorias/:subcategoryId/productos",
+                element: <Home />,
+              },
+            ],
+          },
+        ],
+      },
       { path: "/ventas", element: <Movements /> },
       { path: "/compras", element: <Movements /> },
     ],

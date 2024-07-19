@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import Button from "@mui/joy/Button";
 import FormControl from "@mui/joy/FormControl";
@@ -16,6 +17,7 @@ import { GlobalContext } from "../../state";
 
 export default function InputModal({ resource, handleClose }) {
   const { fetchData, state } = useContext(GlobalContext);
+  const { categoryId } = useParams();
   const [modalState, setAlertModal] = useState({ open: false, message: "" });
 
   const handleCloseAlert = () => {
@@ -33,7 +35,7 @@ export default function InputModal({ resource, handleClose }) {
     };
 
     if (resource == state.routes.subCategories)
-      inputs["CategoryId"] = state.card_selected.id;
+      inputs["CategoryId"] = categoryId;
 
     const [data, status] = await fetchData({
       method: "POST",

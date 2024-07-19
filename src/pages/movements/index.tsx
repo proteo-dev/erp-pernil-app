@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import { GlobalContext } from "../../state";
 
@@ -7,10 +8,11 @@ import Alert from "../../components/modals/alert";
 
 function Movements() {
   const { state, fetchData } = useContext(GlobalContext);
+  const { pathname } = useLocation();
   const [movements, setMovements] = useState([]);
   const [modalState, setAlertModal] = useState({ open: false, message: "" });
 
-  const locat = location.pathname.replace("/", "");
+  const location = pathname.replace("/", "");
 
   const handleClose = () => {
     setAlertModal((prev) => {
@@ -22,7 +24,7 @@ function Movements() {
     (async () => {
       const [movements, status] = await fetchData({
         path: state.routes.movements,
-        query: `operation=${locat}`,
+        query: `operation=${location}`,
       });
 
       if (status == 200) {
@@ -31,13 +33,13 @@ function Movements() {
         setAlertModal({ open: true, message: movements });
       }
     })();
-  }, []);
+  }, [location]);
 
   return (
     <>
       <AccountingBoard
-        location={locat}
-        title={locat[0].toUpperCase() + locat.slice(1)}
+        location={location}
+        title={location[0].toUpperCase() + location.slice(1)}
       >
         {movements}
       </AccountingBoard>

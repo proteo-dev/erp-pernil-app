@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 import Button from "@mui/joy/Button";
 import FormControl from "@mui/joy/FormControl";
@@ -18,8 +19,9 @@ import Alert from "./alert";
 
 import { GlobalContext } from "../../state";
 
-export default function ProductModal({ action, handleClose }) {
+export default function ProductModal({ productId, action, handleClose }) {
   const { fetchData, state } = useContext(GlobalContext);
+  const { categoryId, subcategoryId } = useParams();
   const [modalState, setAlertModal] = useState({ open: false, message: "" });
   const [elements, setElements] = useState({
     title: "",
@@ -40,7 +42,7 @@ export default function ProductModal({ action, handleClose }) {
 
   const getDataFromDb = async () => {
     const [response, status] = await fetchData({
-      path: `products/${state.card_selected.id}`,
+      path: `${state.routes.products}/${productId}`,
     });
 
     if (status == 200) {
@@ -60,7 +62,7 @@ export default function ProductModal({ action, handleClose }) {
         };
       });
     } else {
-      alert(response);
+      setAlertModal({ open: true, message: response });
     }
   };
 
@@ -81,10 +83,10 @@ export default function ProductModal({ action, handleClose }) {
       isService: formElements.service.checked,
       buy: formElements.buy.checked,
       sell: formElements.sell.checked,
-      cost: formElements.cost.value,
-      profit: formElements.profit.value,
-      CategoryId: parseInt(state.card_selected.CategoryId),
-      SubcategoryId: parseInt(state.card_selected.id),
+      cost: parseInt(formElements.cost.value),
+      profit: parseInt(formElements.profit.value),
+      CategoryId: parseInt(categoryId),
+      SubcategoryId: parseInt(subcategoryId),
     };
 
     let method = "POST";
@@ -92,7 +94,7 @@ export default function ProductModal({ action, handleClose }) {
 
     if (action == "GET") {
       method = "PATCH";
-      path = "products/" + state.card_selected.id;
+      path = "products/" + productId;
     }
 
     const [product, status] = await fetchData({ method, path, data });

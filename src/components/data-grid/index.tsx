@@ -34,7 +34,7 @@ const columnsProd = [
     filterable: false,
     valueGetter: (value: string) => new Date(value).toLocaleString("es-AR"),
   },
-]; // agregar precios
+];
 
 const columnsEntity = [
   { field: "id", headerName: "Código", flex: 0.2 },
@@ -83,10 +83,9 @@ export default function Grid({ handleSelect, operation }) {
     let path: string;
 
     let query = "";
-    const field =
-      location.pathname.replace("/", "") == "ventas" ? "sell" : "buy"; // verifico donde estoy para solicitar productos de ventas o compras
-
     if (filterValue) query = `${filterField}=${filterValue}&`; // valido si me llegaron datos de un filtro y construyo la query
+
+    const field = operation == "ventas" ? "sell" : "buy"; // verifico donde estoy para solicitar productos de ventas o compras
 
     switch (operation) {
       case "ventas":

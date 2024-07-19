@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { GlobalContext } from "../../state";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import ProductModal from "../modals/product-modal";
 import InputModal from "../modals/modal";
@@ -8,29 +8,34 @@ import "./index.css";
 
 function Panel({ resource, title, children = [] }) {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-  const { state, setState } = useContext(GlobalContext);
-  const [modalState, setModal] = useState({ open: false, action: "POST" });
-
-  const changePanel = () => {
-    switch (resource) {
-      case state.routes.subCategories:
-        navigate("/productos");
-        break;
-      case state.routes.products:
-        setModal({ action: "GET", open: true });
-        break;
-
-      default:
-        navigate("/subcategorias");
-        break;
-    }
-  };
+  const { state } = useContext(GlobalContext);
+  const [modalState, setModal] = useState({
+    open: false,
+    action: "POST",
+    elementId: "",
+  });
 
   const handleClose = () =>
     setModal((prev) => {
       return { ...prev, open: false };
     });
+
+  const changePanel = (id: string) => {
+    switch (resource) {
+      case state.routes.subCategories:
+        navigate(`${pathname}/${id}/productos`);
+        break;
+      case state.routes.products:
+        setModal({ action: "GET", open: true, elementId: id });
+        break;
+
+      default:
+        navigate(`/${id}/subcategorias`);
+        break;
+    }
+  };
 
   return (
     <div className="container">
@@ -38,17 +43,9 @@ function Panel({ resource, title, children = [] }) {
       <div className="panel">
         {children.map((el) => (
           <div
-            onClick={(e) => {
-              const { id, dataset } = e.target as HTMLElement;
-
-              setState({
-                card_selected: { id, CategoryId: dataset?.categoryid },
-              });
-              changePanel();
-            }}
+            onClick={(e) => changePanel(e.target.id)}
             key={el.id}
             id={el.id}
-            data-categoryid={el.CategoryId}
             className={"item"}
           >
             {el.name}
@@ -67,7 +64,11 @@ function Panel({ resource, title, children = [] }) {
       </div>
       {modalState.open &&
         (resource == state.routes.products ? (
-          <ProductModal action={modalState.action} handleClose={handleClose} />
+          <ProductModal
+            productId={modalState.elementId}
+            action={modalState.action}
+            handleClose={handleClose}
+          />
         ) : (
           <InputModal resource={resource} handleClose={handleClose} />
         ))}

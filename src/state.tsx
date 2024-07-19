@@ -11,7 +11,6 @@ const GlobalContext = createContext();
 
 const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, _setState] = useState({
-    card_selected: {},
     products: [],
     categories: [],
     subCategories: [],
@@ -39,12 +38,8 @@ const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
       return [response.data, response.status];
     } catch (error) {
       if (error.code == "ERR_NETWORK") {
-        return [{ response: "No se pudo conectar con el servidor" }, 500];
-      }
-
-      if (!error.response) {
-        console.log(error.message);
-
+        return ["No se pudo conectar con el servidor", 500];
+      } else if (!error.response) {
         return [error.message, null];
       }
 

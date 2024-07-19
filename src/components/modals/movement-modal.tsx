@@ -17,7 +17,7 @@ import Alert from "./alert";
 
 import { GlobalContext } from "../../state";
 
-export default function MovementModal({ action, operation, handleClose }) {
+export default function MovementModal({ operation, handleClose }) {
   const { fetchData, state } = useContext(GlobalContext);
   const [modalState, setAlertModal] = useState({ open: false, message: "" });
   const [isDataVisible, setDataVisible] = useState(false);
@@ -49,23 +49,18 @@ export default function MovementModal({ action, operation, handleClose }) {
       amount: elements.amountToPaid,
     };
 
-    if (operation == "ventas") {
+    if (isSalesOperation) {
       inputs["ClientId"] = elements.agentId;
     } else {
       inputs["SupplierId"] = elements.agentId;
     }
 
-    let method = "POST";
-    let path = state.routes.movements;
-
-    if (action == "GET") {
-      method = "PATCH";
-      path = state.routes.movements + "/" + state.card_selected.id;
-    }
+    const method = "POST";
+    const path = state.routes.movements;
 
     const [data, status] = await fetchData({ method, path, inputs });
 
-    if (status == 201 || status == 200) {
+    if (status == 201) {
       handleClose();
       location.replace("/");
     } else {

@@ -10,10 +10,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <GlobalProvider>
       <RouterProvider router={router} />
     </GlobalProvider>
-  </React.StrictMode >
+  </React.StrictMode>
 );
 
 window.addEventListener("load", () => {
-  if (location.pathname != "/")
-    location.replace("/")
-})
+  if (location.pathname != "/") location.replace("/");
+});
