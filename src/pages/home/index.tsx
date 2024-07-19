@@ -20,6 +20,11 @@ function Home() {
   let query: string;
 
   switch (location) {
+    default:
+      title = "Categorias";
+      resource = state.routes.categories;
+      break;
+
     case "subcategorias":
       title = "Sub categorias";
       resource = state.routes.subCategories;
@@ -32,9 +37,14 @@ function Home() {
       query = `SubcategoryId=${subcategoryId}`;
       break;
 
-    default:
-      title = "Categorias";
-      resource = state.routes.categories;
+    case "clientes":
+      title = "Clientes";
+      resource = state.routes.clients;
+      break;
+
+    case "proveedores":
+      title = "Proveedores";
+      resource = state.routes.suppliers;
       break;
   }
 

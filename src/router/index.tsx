@@ -25,10 +25,18 @@ const router = createBrowserRouter([
               },
             ],
           },
+          { path: "/ventas/clientes", element: <Home /> },
+          { path: "/compras/proveedores", element: <Home /> },
         ],
       },
-      { path: "/ventas", element: <Movements /> },
-      { path: "/compras", element: <Movements /> },
+      {
+        path: "/ventas",
+        element: <Movements />,
+      },
+      {
+        path: "/compras",
+        element: <Home />,
+      },
     ],
   },
 ]);

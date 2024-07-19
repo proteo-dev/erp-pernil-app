@@ -2,20 +2,22 @@ import { useContext, useState } from "react";
 import { GlobalContext } from "../../state";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import ProductModal from "../modals/product-modal";
 import InputModal from "../modals/modal";
+import ProductModal from "../modals/product-modal";
+import AgentModal from "../modals/agent";
+
 import "./index.css";
 
 function Panel({ resource, title, children = [] }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-
-  const { state } = useContext(GlobalContext);
   const [modalState, setModal] = useState({
     open: false,
     action: "POST",
     elementId: "",
   });
+
+  const { state } = useContext(GlobalContext);
 
   const handleClose = () =>
     setModal((prev) => {
@@ -66,6 +68,13 @@ function Panel({ resource, title, children = [] }) {
         (resource == state.routes.products ? (
           <ProductModal
             productId={modalState.elementId}
+            action={modalState.action}
+            handleClose={handleClose}
+          />
+        ) : resource == state.routes.clients ||
+          resource == state.routes.suppliers ? (
+          <AgentModal
+            agentId={modalState.elementId}
             action={modalState.action}
             handleClose={handleClose}
           />
