@@ -8,7 +8,7 @@ import AgentModal from "../modals/agent";
 
 import "./index.css";
 
-function Panel({ resource, title, children = [] }) {
+function Panel({ location, title, children = [] }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [modalState, setModal] = useState({
@@ -25,11 +25,19 @@ function Panel({ resource, title, children = [] }) {
     });
 
   const changePanel = (id: string) => {
-    switch (resource) {
+    switch (location) {
       case state.routes.subCategories:
         navigate(`${pathname}/${id}/productos`);
         break;
       case state.routes.products:
+        setModal({ action: "GET", open: true, elementId: id });
+        break;
+
+      case state.routes.clients:
+        setModal({ action: "GET", open: true, elementId: id });
+        break;
+
+      case state.routes.suppliers:
         setModal({ action: "GET", open: true, elementId: id });
         break;
 
@@ -65,21 +73,22 @@ function Panel({ resource, title, children = [] }) {
         Crear
       </div>
       {modalState.open &&
-        (resource == state.routes.products ? (
+        (location == state.routes.products ? (
           <ProductModal
             productId={modalState.elementId}
             action={modalState.action}
             handleClose={handleClose}
           />
-        ) : resource == state.routes.clients ||
-          resource == state.routes.suppliers ? (
+        ) : location == state.routes.clients ||
+          location == state.routes.suppliers ? (
           <AgentModal
+            location={location}
             agentId={modalState.elementId}
             action={modalState.action}
             handleClose={handleClose}
           />
         ) : (
-          <InputModal resource={resource} handleClose={handleClose} />
+          <InputModal location={location} handleClose={handleClose} />
         ))}
     </div>
   );

@@ -59,7 +59,7 @@ function Navbar() {
         break;
 
       case "suppliers":
-        navigate(`${pathname}/provedores`);
+        navigate(`${pathname}/proveedores`);
         break;
 
       default:

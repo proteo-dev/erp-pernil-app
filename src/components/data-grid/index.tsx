@@ -103,7 +103,7 @@ export default function Grid({ handleSelect, operation }) {
 
     const [data, status] = await fetchData({
       path,
-      query: `offset=${offset}&limit=${pageSize}&${query}`,
+      query: `isActive=true&offset=${offset}&limit=${pageSize}&${query}`,
     });
 
     if (status == 200) {

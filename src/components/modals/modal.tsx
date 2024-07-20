@@ -15,7 +15,7 @@ import Alert from "./alert";
 
 import { GlobalContext } from "../../state";
 
-export default function InputModal({ resource, handleClose }) {
+export default function InputModal({ location, handleClose }) {
   const { fetchData, state } = useContext(GlobalContext);
   const { categoryId } = useParams();
   const [modalState, setAlertModal] = useState({ open: false, message: "" });
@@ -34,18 +34,18 @@ export default function InputModal({ resource, handleClose }) {
       name: formElements.name.value,
     };
 
-    if (resource == state.routes.subCategories)
+    if (location == state.routes.subCategories)
       inputs["CategoryId"] = categoryId;
 
     const [data, status] = await fetchData({
       method: "POST",
-      path: resource,
+      path: location,
       data: inputs,
     });
 
     if (status == 201) {
       handleClose();
-      location.replace("/");
+      window.location.replace("/");
     } else {
       setAlertModal({ open: true, message: data });
     }
@@ -56,13 +56,13 @@ export default function InputModal({ resource, handleClose }) {
       <Modal open={true} onClose={() => handleClose()}>
         <ModalDialog>
           <DialogTitle>
-            {resource == state.routes.categories
+            {location == state.routes.categories
               ? "CATEGORÍA"
               : "SUB-CATEGORÍA"}
           </DialogTitle>
           <DialogContent>
             Completá la información para crear la{" "}
-            {resource == state.routes.categories
+            {location == state.routes.categories
               ? "categoría."
               : "subcategoría."}
           </DialogContent>

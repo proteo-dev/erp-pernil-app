@@ -16,35 +16,35 @@ function Home() {
   const location = fullUrl[fullUrl.length - 1];
 
   let title: string;
-  let resource: string;
+  let path: string;
   let query: string;
 
   switch (location) {
     default:
       title = "Categorias";
-      resource = state.routes.categories;
+      path = state.routes.categories;
       break;
 
     case "subcategorias":
       title = "Sub categorias";
-      resource = state.routes.subCategories;
+      path = state.routes.subCategories;
       query = `CategoryId=${categoryId}`;
       break;
 
     case "productos":
       title = "Productos";
-      resource = state.routes.products;
+      path = state.routes.products;
       query = `SubcategoryId=${subcategoryId}`;
       break;
 
     case "clientes":
       title = "Clientes";
-      resource = state.routes.clients;
+      path = state.routes.clients;
       break;
 
     case "proveedores":
       title = "Proveedores";
-      resource = state.routes.suppliers;
+      path = state.routes.suppliers;
       break;
   }
 
@@ -57,7 +57,7 @@ function Home() {
   useEffect(() => {
     (async () => {
       const [response, status] = await fetchData({
-        path: resource,
+        path: path,
         query,
       });
 
@@ -71,7 +71,7 @@ function Home() {
 
   return (
     <>
-      <CustomPanel resource={resource} title={title}>
+      <CustomPanel location={path} title={title}>
         {content}
       </CustomPanel>
       {modalState.open && (

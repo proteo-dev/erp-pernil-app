@@ -164,7 +164,7 @@ export default function MovementModal({ operation, handleClose }) {
       <Modal open={true} onClose={() => handleClose()}>
         <ModalDialog>
           <DialogTitle>Movimientos</DialogTitle>
-          <DialogContent>Completá la información del movimiento.</DialogContent>
+          <DialogContent>Completá la información.</DialogContent>
           <form id="movementForm" onSubmit={handleSubmit}>
             <Stack spacing={2}>
               <FormControl>
