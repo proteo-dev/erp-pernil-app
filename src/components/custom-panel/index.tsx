@@ -29,6 +29,7 @@ function Panel({ location, title, children = [] }) {
       case state.routes.subCategories:
         navigate(`${pathname}/${id}/productos`);
         break;
+
       case state.routes.products:
         setModal({ action: "GET", open: true, elementId: id });
         break;

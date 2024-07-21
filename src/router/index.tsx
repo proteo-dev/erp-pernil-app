@@ -35,7 +35,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/compras",
-        element: <Home />,
+        element: <Movements />,
       },
     ],
   },

@@ -20,7 +20,6 @@ import { GlobalContext } from "../../state";
 export default function MovementModal({ operation, handleClose }) {
   const { fetchData, state } = useContext(GlobalContext);
   const [modalState, setAlertModal] = useState({ open: false, message: "" });
-  const [isDataVisible, setDataVisible] = useState(false);
 
   const [elements, setElements] = useState({
     amountPerUnit: 1,
@@ -58,7 +57,7 @@ export default function MovementModal({ operation, handleClose }) {
     const method = "POST";
     const path = state.routes.movements;
 
-    const [data, status] = await fetchData({ method, path, inputs });
+    const [data, status] = await fetchData({ method, path, data: inputs });
 
     if (status == 201) {
       handleClose();
@@ -73,26 +72,12 @@ export default function MovementModal({ operation, handleClose }) {
 
     switch (value) {
       case "agent":
-        setElements((prev) => {
-          return {
-            ...prev,
-            agentId: e.target.value,
-          };
-        });
+        getDataFromDb(e.target.value, operation)
         break;
 
       case "product":
-        setElements((prev) => {
-          return {
-            ...prev,
-            ProductId: e.target.value,
-          };
-        });
-
-        if (!parseInt(e.target.value)) {
-          setDataVisible(false);
-        } else {
-          setDataVisible(true);
+        if (parseInt(e.target.value) >= 0) {
+          getDataFromDb(e.target.value, "productos")
         }
 
         break;
@@ -135,6 +120,57 @@ export default function MovementModal({ operation, handleClose }) {
     }
   };
 
+  // type == "ventas" | "compras" | "productos"
+  const getDataFromDb = async (id, type: string) => {
+    let path: string
+    let data = {}
+    let query = ""
+
+    const field = operation == "ventas" ? "sell" : "buy"; // verifico donde estoy para solicitar productos de ventas o compras
+
+    if (type == "productos") {
+      path = state.routes.products
+      query += `${field}=true`;
+      data.ProductId = ""
+    } else if (type == "ventas") {
+      path = state.routes.clients
+      data.agentId = ""
+
+    } else {
+      path = state.routes.suppliers
+      data.agentId = ""
+    }
+
+    const [response, status] = await fetchData({
+      path: `${path}/${id}`, query: `isActive=true&${query}` // nofunciona
+    });
+
+    if (status == 200) {
+      if (path == state.routes.products) data = {
+        ProductId: response.data.id,
+        amountPerUnit: response.data.sellPrice,
+        amountToPaid: response.data.sellPrice,
+      }
+      else data = { agentId: response.data.id }
+
+      setElements((prev) => {
+        return {
+          ...prev,
+          ...data
+        };
+      });
+    } else {
+      setElements((prev) => {
+        return {
+          ...prev,
+          ...data
+        };
+      }); // vacío el input que completaron con el ID
+
+      setAlertModal({ open: true, message: response });
+    }
+  };
+
   const catchSelectedItem = ({ data, operation }) => {
     switch (operation) {
       case "productos":
@@ -147,7 +183,6 @@ export default function MovementModal({ operation, handleClose }) {
           };
         });
 
-        setDataVisible(true);
         break;
 
       case "ventas" || "compras":
@@ -171,10 +206,10 @@ export default function MovementModal({ operation, handleClose }) {
                 <FormLabel>Codigo producto</FormLabel>
                 <Input
                   onChange={handleChange}
-                  value={elements.ProductId}
-                  type="number"
                   id="product"
                   name="product"
+                  value={elements.ProductId}
+                  type="number"
                   autoFocus
                   required
                   endDecorator={
@@ -183,6 +218,11 @@ export default function MovementModal({ operation, handleClose }) {
                       operation="productos"
                     />
                   }
+                  slotProps={{
+                    input: {
+                      min: 0
+                    }
+                  }}
                 />
               </FormControl>
               <FormControl>
@@ -203,91 +243,94 @@ export default function MovementModal({ operation, handleClose }) {
                       operation={operation}
                     />
                   }
+                  slotProps={{
+                    input: {
+                      min: 1,
+                    }
+                  }}
                 />
               </FormControl>
-              {isDataVisible && (
-                <>
-                  <FormControl>
-                    <FormLabel>Unidades</FormLabel>
-                    <Input
-                      onChange={handleChange}
-                      id="units"
-                      name="units"
-                      type="number"
-                      value={elements.units}
-                      slotProps={{
-                        input: {
-                          min: 1,
-                        },
-                      }}
-                    />
-                  </FormControl>
-                  <FormControl>
-                    <FormLabel>Monto X u.</FormLabel>
-                    <Input
-                      onChange={handleChange}
-                      id="amountPerUnit"
-                      name="amountPerUnit"
-                      type="number"
-                      startDecorator={"$"}
-                      value={elements.amountPerUnit}
-                      slotProps={{
-                        input: {
-                          min: 1,
-                        },
-                      }}
-                    />
-                  </FormControl>
-                  <FormControl>
-                    <FormLabel>Monto total</FormLabel>
-                    <Input
-                      onChange={handleChange}
-                      id="amountToPaid"
-                      name="amountToPaid"
-                      type="number"
-                      startDecorator={"$"}
-                      value={elements.amountToPaid}
-                      slotProps={{
-                        input: {
-                          min: 1,
-                        },
-                      }}
-                    />
-                  </FormControl>
-                  <FormControl>
-                    <FormLabel>Método de pago</FormLabel>
-                    <Select onChange={handleChange} defaultValue="cash">
-                      <Option id="cash" value="cash">
-                        efectivo
-                      </Option>
-                      <Option id="transfer" value="transfer">
-                        transferencia
-                      </Option>
-                      <Option id="mp" value="mp">
-                        mercado pago
-                      </Option>
-                      <Option id="creditCard" value="creditCard">
-                        tarjeta de credito
-                      </Option>
-                      <Option id="debitCard" value="debitCard">
-                        tarjeta de debito
-                      </Option>
-                    </Select>
-                  </FormControl>
-                  <Button type="submit">Ok</Button>
-                </>
-              )}
+              <FormControl>
+                <FormLabel>Unidades</FormLabel>
+                <Input
+                  onChange={handleChange}
+                  id="units"
+                  name="units"
+                  type="number"
+                  value={elements.units}
+                  slotProps={{
+                    input: {
+                      min: 1,
+                    },
+                  }}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Monto X u.</FormLabel>
+                <Input
+                  onChange={handleChange}
+                  id="amountPerUnit"
+                  name="amountPerUnit"
+                  type="number"
+                  startDecorator={"$"}
+                  value={elements.amountPerUnit}
+                  slotProps={{
+                    input: {
+                      min: 1,
+                    },
+                  }}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Monto total</FormLabel>
+                <Input
+                  onChange={handleChange}
+                  id="amountToPaid"
+                  name="amountToPaid"
+                  type="number"
+                  startDecorator={"$"}
+                  value={elements.amountToPaid}
+                  slotProps={{
+                    input: {
+                      min: 1,
+                    },
+                  }}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Método de pago</FormLabel>
+                <Select onChange={handleChange} defaultValue="cash">
+                  <Option id="cash" value="cash">
+                    efectivo
+                  </Option>
+                  <Option id="transfer" value="transfer">
+                    transferencia
+                  </Option>
+                  <Option id="mp" value="mp">
+                    mercado pago
+                  </Option>
+                  <Option id="creditCard" value="creditCard">
+                    tarjeta de credito
+                  </Option>
+                  <Option id="debitCard" value="debitCard">
+                    tarjeta de debito
+                  </Option>
+                </Select>
+              </FormControl>
+              <Button type="submit">Ok</Button>
             </Stack>
           </form>
         </ModalDialog>
-      </Modal>
-      {modalState.open && (
-        <Alert
-          title="ALERTA"
-          message={modalState.message}
-          handleClose={handleCloseAlert}
-        />
-      )}
+      </Modal >
+      {
+        modalState.open && (
+          <Alert
+            title="ALERTA"
+            message={modalState.message}
+            handleClose={handleCloseAlert}
+          />
+        )
+      }
     </>
   );
 }

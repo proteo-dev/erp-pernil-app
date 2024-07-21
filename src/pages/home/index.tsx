@@ -26,13 +26,13 @@ function Home() {
       break;
 
     case "subcategorias":
-      title = "Sub categorias";
+      title = content[0]?.Category?.name || "Sub categorias"
       path = state.routes.subCategories;
       query = `CategoryId=${categoryId}`;
       break;
 
     case "productos":
-      title = "Productos";
+      title = content[0]?.Subcategory?.name || "Productos"
       path = state.routes.products;
       query = `SubcategoryId=${subcategoryId}`;
       break;

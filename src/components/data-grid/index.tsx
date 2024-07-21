@@ -6,10 +6,11 @@ import { DataGrid } from "@mui/x-data-grid";
 import Alert from "../modals/alert";
 
 import { GlobalContext } from "../../state";
+import { useLocation } from "react-router-dom";
 
 const columnsProd = [
   { field: "id", headerName: "Código", flex: 0.2 },
-  { field: "name", headerName: "Nombre", flex: 1 },
+  { field: "name", headerName: "Descripción", flex: 1 },
   { field: "stock", headerName: "Stock", flex: 0.2, filterable: false },
   { field: "sellPrice", headerName: "Precio", flex: 0.2, filterable: false },
   {
@@ -59,6 +60,7 @@ function CustomNoRowsOverlay() {
 
 export default function Grid({ handleSelect, operation }) {
   const { fetchData, state } = useContext(GlobalContext);
+  const { pathname } = useLocation()
   const [modalState, setAlertModal] = useState({ open: false, message: "" });
   const [data, setData] = useState({ count: 0, rows: [] });
   const [paginationModel, setPaginationModel] = useState({
@@ -83,9 +85,9 @@ export default function Grid({ handleSelect, operation }) {
     let path: string;
 
     let query = "";
-    if (filterValue) query = `${filterField}=${filterValue}&`; // valido si me llegaron datos de un filtro y construyo la query
+    if (filterValue) query = `${filterField}=${filterValue}`; // valido si me llegaron datos de un filtro y construyo la query
 
-    const field = operation == "ventas" ? "sell" : "buy"; // verifico donde estoy para solicitar productos de ventas o compras
+    const field = pathname.includes("ventas") ? "sell" : "buy"; // verifico donde estoy para solicitar productos de ventas o compras
 
     switch (operation) {
       case "ventas":

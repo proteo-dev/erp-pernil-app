@@ -32,6 +32,7 @@ export default function ProductModal({ productId, action, handleClose }) {
     sell: true,
     product: true,
     service: false,
+    isActive: true,
   });
 
   const handleCloseAlert = () => {
@@ -46,7 +47,7 @@ export default function ProductModal({ productId, action, handleClose }) {
     });
 
     if (status == 200) {
-      const { name, stock, cost, profit, buy, sell, isService } = response.data;
+      const { name, stock, cost, profit, buy, sell, isService, isActive } = response.data;
 
       setElements((prev) => {
         return {
@@ -59,6 +60,7 @@ export default function ProductModal({ productId, action, handleClose }) {
           sell,
           service: isService,
           product: !isService,
+          isActive: isActive,
         };
       });
     } else {
@@ -83,6 +85,7 @@ export default function ProductModal({ productId, action, handleClose }) {
       isService: formElements.service.checked,
       buy: formElements.buy.checked,
       sell: formElements.sell.checked,
+      isActive: formElements.isActive.checked,
       cost: parseInt(formElements.cost.value),
       profit: parseInt(formElements.profit.value),
       CategoryId: parseInt(categoryId),
@@ -120,6 +123,8 @@ export default function ProductModal({ productId, action, handleClose }) {
           };
         });
         break;
+
+
       case "product":
         setElements((prev) => {
           return {
@@ -129,6 +134,7 @@ export default function ProductModal({ productId, action, handleClose }) {
           };
         });
         break;
+
       case "service":
         setElements((prev) => {
           return {
@@ -138,16 +144,25 @@ export default function ProductModal({ productId, action, handleClose }) {
           };
         });
         break;
+
       case "buy":
         setElements((prev) => {
           return { ...prev, buy: e.target.checked };
         });
         break;
+
       case "sell":
         setElements((prev) => {
           return { ...prev, sell: e.target.checked };
         });
         break;
+
+      case "isActive":
+        setElements((prev) => {
+          return { ...prev, isActive: e.target.checked };
+        })
+        break;
+
       case "stock":
         setElements((prev) => {
           return {
@@ -156,6 +171,7 @@ export default function ProductModal({ productId, action, handleClose }) {
           };
         });
         break;
+
       case "cost":
         setElements((prev) => {
           return {
@@ -164,6 +180,7 @@ export default function ProductModal({ productId, action, handleClose }) {
           };
         });
         break;
+
       case "profit":
         setElements((prev) => {
           return {
@@ -302,18 +319,30 @@ export default function ProductModal({ productId, action, handleClose }) {
                   />
                 </FormControl>
               </Box>
+              <FormControl>
+                <Checkbox
+                  size="lg"
+                  id="isActive"
+                  name="isActive"
+                  label="Activo"
+                  checked={elements.isActive}
+                  onChange={handleChange}
+                />
+              </FormControl>
               <Button type="submit">Ok</Button>
             </Stack>
           </form>
-        </ModalDialog>
-      </Modal>
-      {modalState.open && (
-        <Alert
-          title="ALERTA"
-          message={modalState.message}
-          handleClose={handleCloseAlert}
-        />
-      )}
+        </ModalDialog >
+      </Modal >
+      {
+        modalState.open && (
+          <Alert
+            title="ALERTA"
+            message={modalState.message}
+            handleClose={handleCloseAlert}
+          />
+        )
+      }
     </>
   );
 }
