@@ -1,107 +1,117 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800&display=swap");
 
 :root {
-	--border-radius: 6.3px;
-	--border: 1.44px solid white;
-	--title-font-size: 6.3vmin;
+  --border-radius: 6.3px;
+  --border: 1.44px solid white;
+  --title-font-size: 6.3vmin;
 
-	--button-color: rgba(255, 255, 255, 0.18);
+  --button-color: rgba(255, 255, 255, 0.18);
 }
 
 * {
-	margin: 0;
-	padding: 0;
-	border: none;
-	box-sizing: border-box;
-	font-family: 'Montserrat', sans-serif;
-	outline: none;
-	text-decoration: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+  outline: none;
+  text-decoration: none;
 }
 
 body {
-	background: #0f2027;
-	background: -webkit-linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
-	background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+  background: #f2f1f1;
+}
+
+::-webkit-scrollbar {
+  width: 5px; /* width of the entire scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(253, 253, 253); /*color of the tracking area */
+  border-radius: 2px; /* roundness of the scroll thumb */
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(172, 172, 172);
+  border-radius: 10px; /* roundness of the scroll thumb */
 }
 
 #root {
-	width: 100vw;
-	height: 100vh;
-	padding: 0 9%;
+  width: 100vw;
+  height: 100vh;
 
-	display: flex;
-	flex-direction: column;
-	row-gap: 50px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 30px;
 }
-
 
 /* LOGIN PAGE */
 
 LoginPage {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
 }
 
 .login__container {
-	width: clamp(351px, 50vw, 720px);
+  width: clamp(351px, 50vw, 720px);
 
-	background-color: rgba(255, 255, 255, 0.063);
-	backdrop-filter: blur(10px);
-	border: var(--border);
-	border-radius: var(--border-radius);
+  background-color: rgba(255, 255, 255, 0.063);
+  backdrop-filter: blur(10px);
+  border: var(--border);
+  border-radius: var(--border-radius);
 }
 
 .login__title {
-	font-size: var(--title-font-size);
-	margin: 0 0 36px 0;
-	text-align: center;
-	padding: 9px;
-	color: rgb(77, 131, 247);
+  font-size: var(--title-font-size);
+  margin: 0 0 36px 0;
+  text-align: center;
+  padding: 9px;
+  color: rgb(77, 131, 247);
 }
 
 .login__form {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .login__form input {
-	width: 72%;
-	height: 45px;
-	text-align: center;
-	font-size: 21px;
-	margin: 9px;
+  width: 72%;
+  height: 45px;
+  text-align: center;
+  font-size: 21px;
+  margin: 9px;
 
-	color: white;
+  color: white;
 
-	background-color: rgba(255, 255, 255, 0.09);
-	border-radius: var(--border-radius);
+  background-color: rgba(255, 255, 255, 0.09);
+  border-radius: var(--border-radius);
 }
 
 .login__form button {
-	width: 72%;
-	height: 54px;
-	margin: 27px 0 27px 0;
-	font-size: 21px;
-	font-weight: 900;
-	color: white;
-	background-color: var(--button-color);
-	border-radius: var(--border-radius);
-	border: var(--border);
-	cursor: pointer;
+  width: 72%;
+  height: 54px;
+  margin: 27px 0 27px 0;
+  font-size: 21px;
+  font-weight: 900;
+  color: white;
+  background-color: var(--button-color);
+  border-radius: var(--border-radius);
+  border: var(--border);
+  cursor: pointer;
 }
 
 .login__form button:hover {
-	background-color: #2f7fe8;
+  background-color: #2f7fe8;
 }
 
 /* HOME PAGE */
 
-HomePage {
+/* HomePage {
     height: 100vh;
     padding: 30px 0;
     
@@ -119,4 +129,4 @@ CategoriesBoard,
 CustomForm,
 CustomGrid {
 	height: 100%;
-}
+} */

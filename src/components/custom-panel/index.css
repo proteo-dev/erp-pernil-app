@@ -1,87 +1,87 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .container {
-    position: relative;
-    height: 100%;
-    width: 100%;
+  position: relative;
+  height: 100%;
+  width: 100%;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    row-gap: 20px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 33px;
 
-    background-color: rgba(255, 255, 255, 0.207);
-    border: 2px solid white;
-    border-radius: 27px;
+  background-color: inherit;
+  border-radius: 18px;
 }
 
 .background {
-    display: flex;
-    justify-content: center;
+  padding: 0 3%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-    font-weight: bolder;
-    font-size: 60px;
-    color: rgba(255, 255, 255, 0.27);
+  font-size: 35px;
+  color: rgb(0, 0, 0);
 }
 
 .panel {
-    padding: 0 10%;
-    height: 50vh;
+  padding: 0 5%;
+  height: 100%;
 
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    grid-gap: 30px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-gap: 17px;
 
-    justify-items: center;
-    align-items: center;
+  justify-items: center;
+  align-items: center;
 
-    overflow-y: auto;
+  overflow-y: auto;
 }
 
-.panel .item {
-    width: 100%;
-    max-width: 200px;
-    height: 90px;
+.card {
+  width: 100%;
+  max-width: 240px;
+  height: 90px;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    font-size: 24px;
-    font-weight: bold;
+  font-size: 20px;
+  font-weight: 600;
 
-    color: white;
-    background-color: rgba(255, 255, 255, 0.27);
-    border-radius: 18px;
+  color: rgb(0, 0, 0);
+  background-color: #fbfcfe;
+  border: 1px solid rgba(214, 226, 235, 0.8);
+  border-radius: 10px;
 
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .panel .item:hover {
-    background-color: rgba(255, 255, 255, 0.45);
+  color: steelblue;
 }
 
 .button {
-    background-color: rgba(255, 255, 255, 0.63);
-    padding: 8px;
-    align-self: end;
+  background-color: rgba(255, 255, 255, 0.63);
+  padding: 8px;
+  align-self: end;
 
-    color: #2c5364;
-    font-size: 54px;
-    font-weight: bolder;
-    text-align: center;
+  color: #2c5364;
+  font-size: 54px;
+  font-weight: bolder;
+  text-align: center;
 
-    border: 0 solid white;
-    border-radius: 27px 0 24px 0;
-    cursor: pointer;
+  border: 0 solid white;
+  border-radius: 27px 0 24px 0;
+  cursor: pointer;
 }
 
 .button:hover {
-    background-color: rgba(255, 255, 255, 0);
-    color: white;
+  background-color: rgba(255, 255, 255, 0);
+  color: white;
 }

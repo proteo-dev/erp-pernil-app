@@ -45,7 +45,7 @@ const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
 
       const { data, status } = error.response;
 
-      return [data.response, status];
+      return [data.message, status];
     }
   };
 

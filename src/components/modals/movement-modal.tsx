@@ -52,6 +52,7 @@ export default function MovementModal({ operation, handleClose }) {
       inputs["ClientId"] = elements.agentId;
     } else {
       inputs["SupplierId"] = elements.agentId;
+      inputs["operation"] = "compras";
     }
 
     const method = "POST";
@@ -72,12 +73,12 @@ export default function MovementModal({ operation, handleClose }) {
 
     switch (value) {
       case "agent":
-        getDataFromDb(e.target.value, operation)
+        getDataFromDb(e.target.value, operation);
         break;
 
       case "product":
         if (parseInt(e.target.value) >= 0) {
-          getDataFromDb(e.target.value, "productos")
+          getDataFromDb(e.target.value, "productos");
         }
 
         break;
@@ -122,48 +123,49 @@ export default function MovementModal({ operation, handleClose }) {
 
   // type == "ventas" | "compras" | "productos"
   const getDataFromDb = async (id, type: string) => {
-    let path: string
-    let data = {}
-    let query = ""
+    let path: string;
+    let data = {};
+    let query = "";
 
     const field = operation == "ventas" ? "sell" : "buy"; // verifico donde estoy para solicitar productos de ventas o compras
 
     if (type == "productos") {
-      path = state.routes.products
+      path = state.routes.products;
       query += `${field}=true`;
-      data.ProductId = ""
+      data["ProductId"] = "";
     } else if (type == "ventas") {
-      path = state.routes.clients
-      data.agentId = ""
-
+      path = state.routes.clients;
+      data["agentId"] = "";
     } else {
-      path = state.routes.suppliers
-      data.agentId = ""
+      path = state.routes.suppliers;
+      data["agentId"] = "";
     }
 
     const [response, status] = await fetchData({
-      path: `${path}/${id}`, query: `isActive=true&${query}` // nofunciona
+      path: `${path}/${id}`,
+      query: `isActive=true&${query}`, // nofunciona
     });
 
     if (status == 200) {
-      if (path == state.routes.products) data = {
-        ProductId: response.data.id,
-        amountPerUnit: response.data.sellPrice,
-        amountToPaid: response.data.sellPrice,
-      }
-      else data = { agentId: response.data.id }
+      if (path == state.routes.products)
+        data = {
+          ProductId: response.data.id,
+          amountPerUnit: response.data.sellPrice,
+          amountToPaid: response.data.sellPrice,
+        };
+      else data = { agentId: response.data.id };
 
       setElements((prev) => {
         return {
           ...prev,
-          ...data
+          ...data,
         };
       });
     } else {
       setElements((prev) => {
         return {
           ...prev,
-          ...data
+          ...data,
         };
       }); // vacío el input que completaron con el ID
 
@@ -197,7 +199,7 @@ export default function MovementModal({ operation, handleClose }) {
   return (
     <>
       <Modal open={true} onClose={() => handleClose()}>
-        <ModalDialog>
+        <ModalDialog sx={{ width: "400px" }}>
           <DialogTitle>Movimientos</DialogTitle>
           <DialogContent>Completá la información.</DialogContent>
           <form id="movementForm" onSubmit={handleSubmit}>
@@ -220,8 +222,8 @@ export default function MovementModal({ operation, handleClose }) {
                   }
                   slotProps={{
                     input: {
-                      min: 0
-                    }
+                      min: 0,
+                    },
                   }}
                 />
               </FormControl>
@@ -246,7 +248,7 @@ export default function MovementModal({ operation, handleClose }) {
                   slotProps={{
                     input: {
                       min: 1,
-                    }
+                    },
                   }}
                 />
               </FormControl>
@@ -321,16 +323,14 @@ export default function MovementModal({ operation, handleClose }) {
             </Stack>
           </form>
         </ModalDialog>
-      </Modal >
-      {
-        modalState.open && (
-          <Alert
-            title="ALERTA"
-            message={modalState.message}
-            handleClose={handleCloseAlert}
-          />
-        )
-      }
+      </Modal>
+      {modalState.open && (
+        <Alert
+          title="ALERTA"
+          message={modalState.message}
+          handleClose={handleCloseAlert}
+        />
+      )}
     </>
   );
 }

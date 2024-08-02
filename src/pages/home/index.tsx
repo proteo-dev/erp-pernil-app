@@ -26,13 +26,13 @@ function Home() {
       break;
 
     case "subcategorias":
-      title = content[0]?.Category?.name || "Sub categorias"
+      title = content[0]?.Category?.name || "Sub categorias";
       path = state.routes.subCategories;
       query = `CategoryId=${categoryId}`;
       break;
 
     case "productos":
-      title = content[0]?.Subcategory?.name || "Productos"
+      title = content[0]?.Subcategory?.name || "Productos";
       path = state.routes.products;
       query = `SubcategoryId=${subcategoryId}`;
       break;
@@ -61,11 +61,10 @@ function Home() {
         query,
       });
 
-      if (status == 200) {
-        setContent(response.data?.rows);
-      } else {
-        setAlertModal({ open: true, message: response });
-      }
+      if (status != 200)
+        return setAlertModal({ open: true, message: response });
+
+      setContent(response.data?.rows);
     })();
   }, [location]);
 

@@ -33,7 +33,7 @@ function Navbar() {
         });
         break;
 
-      case "/":
+      default:
         setElVisibility({
           buy: "initial",
           sell: "initial",

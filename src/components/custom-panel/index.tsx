@@ -2,29 +2,49 @@ import { useContext, useState } from "react";
 import { GlobalContext } from "../../state";
 import { useNavigate, useLocation } from "react-router-dom";
 
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/joy/IconButton";
+import Tooltip from "@mui/joy/Tooltip";
+import Box from "@mui/joy/Box";
+import Fab from "@mui/material/Fab";
+import LeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import AddIcon from "@mui/icons-material/Add";
+
 import InputModal from "../modals/modal";
 import ProductModal from "../modals/product-modal";
 import AgentModal from "../modals/agent";
+import Alert from "../modals/alert";
 
 import "./index.css";
 
 function Panel({ location, title, children = [] }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { state, fetchData } = useContext(GlobalContext);
   const [modalState, setModal] = useState({
     open: false,
     action: "POST",
     elementId: "",
   });
-
-  const { state } = useContext(GlobalContext);
+  const [alertModalState, setAlertModal] = useState({
+    open: false,
+    message: "",
+  });
 
   const handleClose = () =>
     setModal((prev) => {
       return { ...prev, open: false };
     });
 
-  const changePanel = (id: string) => {
+  const handleCloseAlert = () => {
+    setAlertModal((prev) => {
+      return { ...prev, open: false };
+    });
+  };
+
+  const changePanel = (e) => {
+    const id = e.target.id;
+
     switch (location) {
       case state.routes.subCategories:
         navigate(`${pathname}/${id}/productos`);
@@ -48,30 +68,60 @@ function Panel({ location, title, children = [] }) {
     }
   };
 
+  const deleteItem = async (e) => {
+    const { id } = e.target;
+    console.log(id);
+
+    const [response, status] = await fetchData({
+      path: `categories/${id}`, // ver como alternar con subcat y prods
+      method: "DELETE",
+    });
+
+    if (status != 200) setAlertModal({ open: true, message: response });
+  };
+
   return (
     <div className="container">
-      <div className="background">{title}</div>
+      <div className="background">
+        <Fab onClick={() => navigate(-1)} size="small" aria-label="edit">
+          <LeftIcon />
+        </Fab>
+        <h2>{title}</h2>
+        <Fab
+          onClick={() =>
+            setModal((prev) => {
+              return { ...prev, action: "POST", open: true };
+            })
+          }
+          size="small"
+          aria-label="edit"
+        >
+          <AddIcon />
+        </Fab>
+      </div>
       <div className="panel">
         {children.map((el) => (
-          <div
-            onClick={(e) => changePanel(e.target.id)}
+          <Box
+            sx={{ position: "relative" }}
             key={el.id}
             id={el.id}
-            className={"item"}
+            onClick={changePanel}
+            className="card"
           >
-            {el.name}
-          </div>
+            <Box id={el.id} className={"item"}>
+              {el.name}
+            </Box>
+            <Tooltip
+              sx={{ position: "absolute", bottom: 0, right: 1 }}
+              title="Eliminar"
+              onClick={deleteItem}
+            >
+              <IconButton>
+                <DeleteIcon id={el.id} color="error" sx={{ height: "17px" }} />
+              </IconButton>
+            </Tooltip>
+          </Box>
         ))}
-      </div>
-      <div
-        className="button"
-        onClick={() =>
-          setModal((prev) => {
-            return { ...prev, action: "POST", open: true };
-          })
-        }
-      >
-        Crear
       </div>
       {modalState.open &&
         (location == state.routes.products ? (
@@ -91,6 +141,13 @@ function Panel({ location, title, children = [] }) {
         ) : (
           <InputModal location={location} handleClose={handleClose} />
         ))}
+      {alertModalState.open && (
+        <Alert
+          title="ALERTA"
+          message={alertModalState.message}
+          handleClose={handleCloseAlert}
+        />
+      )}
     </div>
   );
 }

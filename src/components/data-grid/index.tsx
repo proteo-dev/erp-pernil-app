@@ -12,7 +12,12 @@ const columnsProd = [
   { field: "id", headerName: "Código", flex: 0.2 },
   { field: "name", headerName: "Descripción", flex: 1 },
   { field: "stock", headerName: "Stock", flex: 0.2, filterable: false },
-  { field: "sellPrice", headerName: "Precio", flex: 0.2, filterable: false },
+  {
+    field: "sellPrice",
+    headerName: "Precio",
+    flex: 0.2,
+    filterable: false,
+  },
   {
     field: "Category",
     headerName: "Categoría",
@@ -60,7 +65,7 @@ function CustomNoRowsOverlay() {
 
 export default function Grid({ handleSelect, operation }) {
   const { fetchData, state } = useContext(GlobalContext);
-  const { pathname } = useLocation()
+  const { pathname } = useLocation();
   const [modalState, setAlertModal] = useState({ open: false, message: "" });
   const [data, setData] = useState({ count: 0, rows: [] });
   const [paginationModel, setPaginationModel] = useState({
