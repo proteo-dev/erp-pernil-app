@@ -17,7 +17,7 @@ import Alert from "../modals/alert";
 
 import "./index.css";
 
-function Panel({ location, title, children = [] }) {
+function Panel({ location, title, reload, children = [] }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { state, fetchData } = useContext(GlobalContext);
@@ -31,10 +31,12 @@ function Panel({ location, title, children = [] }) {
     message: "",
   });
 
-  const handleClose = () =>
+  const handleClose = () => {
     setModal((prev) => {
       return { ...prev, open: false };
     });
+    reload();
+  };
 
   const handleCloseAlert = () => {
     setAlertModal((prev) => {
@@ -42,9 +44,7 @@ function Panel({ location, title, children = [] }) {
     });
   };
 
-  const changePanel = (e) => {
-    const id = e.target.id;
-
+  const changePanel = (id) => {
     switch (location) {
       case state.routes.subCategories:
         navigate(`${pathname}/${id}/productos`);
@@ -68,16 +68,15 @@ function Panel({ location, title, children = [] }) {
     }
   };
 
-  const deleteItem = async (e) => {
-    const { id } = e.target;
-    console.log(id);
-
+  const deleteItem = async (id) => {
     const [response, status] = await fetchData({
-      path: `categories/${id}`, // ver como alternar con subcat y prods
+      path: `${location}/${id}`,
       method: "DELETE",
     });
 
-    if (status != 200) setAlertModal({ open: true, message: response });
+    if (status != 200) return setAlertModal({ open: true, message: response });
+
+    reload();
   };
 
   return (
@@ -104,20 +103,21 @@ function Panel({ location, title, children = [] }) {
           <Box
             sx={{ position: "relative" }}
             key={el.id}
-            id={el.id}
-            onClick={changePanel}
+            onClick={() => changePanel(el.id)}
             className="card"
           >
-            <Box id={el.id} className={"item"}>
-              {el.name}
-            </Box>
+            <Box className={"item"}>{el.name}</Box>
             <Tooltip
               sx={{ position: "absolute", bottom: 0, right: 1 }}
               title="Eliminar"
-              onClick={deleteItem}
             >
-              <IconButton>
-                <DeleteIcon id={el.id} color="error" sx={{ height: "17px" }} />
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteItem(el.id);
+                }}
+              >
+                <DeleteIcon color="error" sx={{ height: "17px" }} />
               </IconButton>
             </Tooltip>
           </Box>

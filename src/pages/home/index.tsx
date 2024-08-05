@@ -26,13 +26,13 @@ function Home() {
       break;
 
     case "subcategorias":
-      title = content[0]?.Category?.name || "Sub categorias";
+      title = "Sub categorias";
       path = state.routes.subCategories;
       query = `CategoryId=${categoryId}`;
       break;
 
     case "productos":
-      title = content[0]?.Subcategory?.name || "Productos";
+      title = "Productos";
       path = state.routes.products;
       query = `SubcategoryId=${subcategoryId}`;
       break;
@@ -48,6 +48,17 @@ function Home() {
       break;
   }
 
+  const getData = async () => {
+    const [response, status] = await fetchData({
+      path: path,
+      query,
+    });
+
+    if (status != 200) return setAlertModal({ open: true, message: response });
+
+    setContent(response.data?.rows);
+  };
+
   const handleClose = () => {
     setAlertModal((prev) => {
       return { ...prev, open: false };
@@ -55,22 +66,12 @@ function Home() {
   };
 
   useEffect(() => {
-    (async () => {
-      const [response, status] = await fetchData({
-        path: path,
-        query,
-      });
-
-      if (status != 200)
-        return setAlertModal({ open: true, message: response });
-
-      setContent(response.data?.rows);
-    })();
+    getData();
   }, [location]);
 
   return (
     <>
-      <CustomPanel location={path} title={title}>
+      <CustomPanel location={path} title={title} reload={getData}>
         {content}
       </CustomPanel>
       {modalState.open && (

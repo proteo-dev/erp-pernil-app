@@ -47,7 +47,8 @@ export default function ProductModal({ productId, action, handleClose }) {
     });
 
     if (status == 200) {
-      const { name, stock, cost, profit, buy, sell, isService, isActive } = response.data;
+      const { name, stock, cost, profit, buy, sell, isService, isActive } =
+        response.data;
 
       setElements((prev) => {
         return {
@@ -107,7 +108,6 @@ export default function ProductModal({ productId, action, handleClose }) {
       (method == "PATCH" && status == 200)
     ) {
       handleClose();
-      location.replace("/");
     } else {
       setAlertModal({ open: true, message: product });
     }
@@ -123,7 +123,6 @@ export default function ProductModal({ productId, action, handleClose }) {
           };
         });
         break;
-
 
       case "product":
         setElements((prev) => {
@@ -160,7 +159,7 @@ export default function ProductModal({ productId, action, handleClose }) {
       case "isActive":
         setElements((prev) => {
           return { ...prev, isActive: e.target.checked };
-        })
+        });
         break;
 
       case "stock":
@@ -332,17 +331,15 @@ export default function ProductModal({ productId, action, handleClose }) {
               <Button type="submit">Ok</Button>
             </Stack>
           </form>
-        </ModalDialog >
-      </Modal >
-      {
-        modalState.open && (
-          <Alert
-            title="ALERTA"
-            message={modalState.message}
-            handleClose={handleCloseAlert}
-          />
-        )
-      }
+        </ModalDialog>
+      </Modal>
+      {modalState.open && (
+        <Alert
+          title="ALERTA"
+          message={modalState.message}
+          handleClose={handleCloseAlert}
+        />
+      )}
     </>
   );
 }

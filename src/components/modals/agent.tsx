@@ -27,15 +27,15 @@ export default function AgentModal({ location, agentId, action, handleClose }) {
     isActive: true,
   });
 
-  let title: string
-  let path: string
+  let title: string;
+  let path: string;
 
   if (location == state.routes.suppliers) {
-    path = state.routes.suppliers
-    title = "PROVEEDORES"
+    path = state.routes.suppliers;
+    title = "PROVEEDORES";
   } else {
-    path = state.routes.clients
-    title = "CLIENTES"
+    path = state.routes.clients;
+    title = "CLIENTES";
   }
 
   const handleCloseAlert = () => {
@@ -46,14 +46,14 @@ export default function AgentModal({ location, agentId, action, handleClose }) {
 
   const getDataFromDb = async () => {
     const [response, status] = await fetchData({
-      path: `${path}/${agentId}`
+      path: `${path}/${agentId}`,
     });
 
     if (status == 200) {
       setElements((prev) => {
         return {
           ...prev,
-          ...response.data
+          ...response.data,
         };
       });
     } else {
@@ -94,9 +94,7 @@ export default function AgentModal({ location, agentId, action, handleClose }) {
       (method == "POST" && status == 201) ||
       (method == "PATCH" && status == 200)
     ) {
-      console.log("entre?");
       handleClose();
-      window.location.replace("/");
     } else {
       setAlertModal({ open: true, message: agent });
     }
@@ -117,7 +115,7 @@ export default function AgentModal({ location, agentId, action, handleClose }) {
         setElements((prev) => {
           return { ...prev, email: e.target.value };
         });
-        break
+        break;
 
       case "address":
         setElements((prev) => {

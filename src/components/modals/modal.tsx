@@ -45,7 +45,6 @@ export default function InputModal({ location, handleClose }) {
 
     if (status == 201) {
       handleClose();
-      window.location.replace("/");
     } else {
       setAlertModal({ open: true, message: data });
     }
