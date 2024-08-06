@@ -12,3 +12,11 @@
   justify-content: center;
   align-items: center;
 }
+
+.footer {
+  border-top: 2px solid #ddd;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}

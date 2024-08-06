@@ -17,7 +17,7 @@ import Alert from "./alert";
 
 import { GlobalContext } from "../../state";
 
-export default function MovementModal({ operation, handleClose }) {
+export default function MovementModal({ operation, handleClose, reload }) {
   const { fetchData, state } = useContext(GlobalContext);
   const [modalState, setAlertModal] = useState({ open: false, message: "" });
 
@@ -62,7 +62,7 @@ export default function MovementModal({ operation, handleClose }) {
 
     if (status == 201) {
       handleClose();
-      location.replace("/");
+      reload()
     } else {
       setAlertModal({ open: true, message: data });
     }
@@ -87,8 +87,8 @@ export default function MovementModal({ operation, handleClose }) {
         setElements((prev) => {
           return {
             ...prev,
-            amountPerUnit: e.target.value,
-            amountToPaid: e.target.value * prev.units,
+            amountPerUnit: Math.round(e.target.value),
+            amountToPaid: Math.round(e.target.value * prev.units),
           };
         });
         break;
@@ -97,7 +97,7 @@ export default function MovementModal({ operation, handleClose }) {
         setElements((prev) => {
           return {
             ...prev,
-            amountToPaid: e.target.value,
+            amountToPaid: Math.round(e.target.value),
             amountPerUnit: Math.round(e.target.value / prev.units),
           };
         });
@@ -108,7 +108,7 @@ export default function MovementModal({ operation, handleClose }) {
           return {
             ...prev,
             units: e.target.value,
-            amountToPaid: prev.amountPerUnit * e.target.value,
+            amountToPaid: Math.round(prev.amountPerUnit * e.target.value),
           };
         });
         break;
@@ -143,15 +143,15 @@ export default function MovementModal({ operation, handleClose }) {
 
     const [response, status] = await fetchData({
       path: `${path}/${id}`,
-      query: `isActive=true&${query}`, // nofunciona
+      query: `isActive=true&${query}`,
     });
 
     if (status == 200) {
       if (path == state.routes.products)
         data = {
           ProductId: response.data.id,
-          amountPerUnit: response.data.sellPrice,
-          amountToPaid: response.data.sellPrice,
+          amountPerUnit: Math.round(response.data.sellPrice),
+          amountToPaid: Math.round(response.data.sellPrice),
         };
       else data = { agentId: response.data.id };
 
@@ -174,20 +174,28 @@ export default function MovementModal({ operation, handleClose }) {
   };
 
   const catchSelectedItem = ({ data, operation }) => {
+
     switch (operation) {
       case "productos":
         setElements((prev) => {
           return {
             ...prev,
             ProductId: data.id,
-            amountPerUnit: data.sellPrice,
+            amountPerUnit: data.sellPrice, // tengo que colocar como unidad el costo en compras
             amountToPaid: data.sellPrice * prev.units,
           };
         });
 
         break;
 
-      case "ventas" || "compras":
+      case "ventas":
+        setElements((prev) => {
+          return { ...prev, agentId: data.id };
+        });
+
+        break;
+
+      case "compras":
         setElements((prev) => {
           return { ...prev, agentId: data.id };
         });

@@ -20,19 +20,21 @@ function Movements() {
     });
   };
 
-  useEffect(() => {
-    (async () => {
-      const [movements, status] = await fetchData({
-        path: state.routes.movements,
-        query: `operation=${location}`,
-      });
+  const getData = async () => {
+    const [movements, status] = await fetchData({
+      path: state.routes.movements,
+      query: `operation=${location}`,
+    });
 
-      if (status == 200) {
-        setMovements(movements.data?.rows);
-      } else {
-        setAlertModal({ open: true, message: movements });
-      }
-    })();
+    if (status == 200) {
+      setMovements(movements.data?.rows);
+    } else {
+      setAlertModal({ open: true, message: movements });
+    }
+  }
+
+  useEffect(() => {
+    getData();
   }, [location]);
 
   return (
@@ -40,6 +42,7 @@ function Movements() {
       <AccountingBoard
         location={location}
         title={location[0].toUpperCase() + location.slice(1)}
+        reload={getData}
       >
         {movements}
       </AccountingBoard>

@@ -13,7 +13,7 @@ function Layout() {
       <section className="main">
         <Outlet />
       </section>
-      <Box borderTop="2px solid #ddd" component="footer">
+      <Box className="footer" component="footer">
         <Typography level="body-xs" fontWeight="bold" textAlign="center">
           © Proteo Software
         </Typography>

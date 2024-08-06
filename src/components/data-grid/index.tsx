@@ -3,6 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 
+import CustomNoRowsOverlay from "../noRows";
 import Alert from "../modals/alert";
 
 import { GlobalContext } from "../../state";
@@ -12,6 +13,18 @@ const columnsProd = [
   { field: "id", headerName: "Código", flex: 0.2 },
   { field: "name", headerName: "Descripción", flex: 1 },
   { field: "stock", headerName: "Stock", flex: 0.2, filterable: false },
+  {
+    field: "cost",
+    headerName: "Costo",
+    flex: 0.2,
+    filterable: false,
+  },
+  {
+    field: "profit",
+    headerName: "Ganancia",
+    flex: 0.2,
+    filterable: false,
+  },
   {
     field: "sellPrice",
     headerName: "Precio",
@@ -46,22 +59,6 @@ const columnsEntity = [
   { field: "id", headerName: "Código", flex: 0.2 },
   { field: "name", headerName: "Nombre", flex: 1 },
 ];
-
-function CustomNoRowsOverlay() {
-  return (
-    <Box
-      sx={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      No hay información para mostrar
-    </Box>
-  );
-}
 
 export default function Grid({ handleSelect, operation }) {
   const { fetchData, state } = useContext(GlobalContext);

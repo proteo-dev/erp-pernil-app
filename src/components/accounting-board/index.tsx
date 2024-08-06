@@ -1,26 +1,32 @@
 import { useState } from "react";
-import MovementModal from "../modals/movement-modal";
 
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 
+import CustomNoRowsOverlay from "../noRows";
+import MovementModal from "../modals/movement-modal";
+
 import "./index.css";
 
-const columns = [
+const columnsCli = [
   {
     field: "id",
     headerName: "Código",
     flex: 0.2,
+    filterable: false
   },
   {
     field: "Product",
     headerName: "Descripción",
     flex: 1,
     valueGetter: (value: { name: string }) => value?.name,
+    filterable: false
   },
-  { field: "units", headerName: "Unidades", flex: 0.2, filterable: false },
+  {
+    field: "units", headerName: "Unidades", flex: 0.2, filterable: false
+  },
   {
     field: "x",
     headerName: "$/u",
@@ -29,7 +35,9 @@ const columns = [
     valueGetter: (_value: object, row: { amount: number; units: number }) =>
       row.amount / row.units,
   },
-  { field: "amount", headerName: "Total", flex: 0.2, filterable: false },
+  {
+    field: "amount", headerName: "Total", flex: 0.2, filterable: false
+  },
   {
     field: "paymentMethod",
     headerName: "Forma de pago",
@@ -45,6 +53,14 @@ const columns = [
     valueGetter: (value: { fullName: string }) => value?.fullName,
   },
   {
+    field: "Client",
+    headerName: "Cliente",
+    flex: 0.3,
+    minWidth: "100px",
+    filterable: false,
+    valueGetter: (value: { name: string }) => value?.name,
+  },
+  {
     field: "createdAt",
     headerName: "Fecha",
     flex: 0.3,
@@ -52,10 +68,69 @@ const columns = [
     filterable: false,
     valueGetter: (value: string) => value.split("T")[0],
   },
-  // agregar columna cliente/proveedor con su respectivo nombre
 ];
 
-function AccountingBoard({ title, location, children }) {
+const columnsSup = [
+  {
+    field: "id",
+    headerName: "Código",
+    flex: 0.2,
+    filterable: false
+  },
+  {
+    field: "Product",
+    headerName: "Descripción",
+    flex: 1,
+    valueGetter: (value: { name: string }) => value?.name,
+    filterable: false
+  },
+  {
+    field: "units", headerName: "Unidades", flex: 0.2, filterable: false
+  },
+  {
+    field: "amount",
+    headerName: "$/u",
+    flex: 0.2,
+    filterable: false,
+  },
+  {
+    field: "x", headerName: "Total", flex: 0.2, filterable: false,
+    valueGetter: (_value, row: { amount: number; units: number }) => row.amount * row.units, // amountt debería tener el costo
+
+  },
+  {
+    field: "paymentMethod",
+    headerName: "Forma de pago",
+    flex: 0.3,
+    filterable: false,
+  },
+  {
+    field: "User",
+    headerName: "Usuario",
+    flex: 0.3,
+    minWidth: "100px",
+    filterable: false,
+    valueGetter: (value: { fullName: string }) => value?.fullName,
+  },
+  {
+    field: "Supplier",
+    headerName: "Proveedor",
+    flex: 0.3,
+    minWidth: "100px",
+    filterable: false,
+    valueGetter: (value: { name: string }) => value?.name,
+  },
+  {
+    field: "createdAt",
+    headerName: "Fecha",
+    flex: 0.3,
+    minWidth: "100px",
+    filterable: false,
+    valueGetter: (value: string) => value.split("T")[0],
+  },
+];
+
+function AccountingBoard({ title, location, children, reload }) {
   const [modalState, setModal] = useState({ open: false, action: "POST" });
 
   const handleClose = () => {
@@ -91,15 +166,16 @@ function AccountingBoard({ title, location, children }) {
       >
         <DataGrid
           rows={children}
-          columns={columns}
+          columns={location == "ventas" ? columnsCli : columnsSup}
           pageSizeOptions={[30, 100]}
           paginationMode="server"
           disableRowSelectionOnClick
+          slots={{ noRowsOverlay: CustomNoRowsOverlay }}
           rowCount={children.length}
         />
       </Box>
       {modalState.open && (
-        <MovementModal operation={location} handleClose={handleClose} />
+        <MovementModal operation={location} handleClose={handleClose} reload={reload} />
       )}
     </div>
   );
