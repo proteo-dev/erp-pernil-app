@@ -10,22 +10,25 @@ import MovementModal from "../modals/movement-modal";
 
 import "./index.css";
 
-const columnsCli = [
+const columnsOnSell = [
   {
     field: "id",
     headerName: "Código",
     flex: 0.2,
-    filterable: false
+    filterable: false,
   },
   {
     field: "Product",
     headerName: "Descripción",
     flex: 1,
     valueGetter: (value: { name: string }) => value?.name,
-    filterable: false
+    filterable: false,
   },
   {
-    field: "units", headerName: "Unidades", flex: 0.2, filterable: false
+    field: "units",
+    headerName: "Unidades",
+    flex: 0.2,
+    filterable: false,
   },
   {
     field: "x",
@@ -36,7 +39,10 @@ const columnsCli = [
       row.amount / row.units,
   },
   {
-    field: "amount", headerName: "Total", flex: 0.2, filterable: false
+    field: "amount",
+    headerName: "Total",
+    flex: 0.2,
+    filterable: false,
   },
   {
     field: "paymentMethod",
@@ -70,22 +76,25 @@ const columnsCli = [
   },
 ];
 
-const columnsSup = [
+const columnsOnBuy = [
   {
     field: "id",
     headerName: "Código",
     flex: 0.2,
-    filterable: false
+    filterable: false,
   },
   {
     field: "Product",
     headerName: "Descripción",
     flex: 1,
     valueGetter: (value: { name: string }) => value?.name,
-    filterable: false
+    filterable: false,
   },
   {
-    field: "units", headerName: "Unidades", flex: 0.2, filterable: false
+    field: "units",
+    headerName: "Unidades",
+    flex: 0.2,
+    filterable: false,
   },
   {
     field: "amount",
@@ -94,9 +103,12 @@ const columnsSup = [
     filterable: false,
   },
   {
-    field: "x", headerName: "Total", flex: 0.2, filterable: false,
-    valueGetter: (_value, row: { amount: number; units: number }) => row.amount * row.units, // amountt debería tener el costo
-
+    field: "x",
+    headerName: "Total",
+    flex: 0.2,
+    filterable: false,
+    valueGetter: (_value, row: { amount: number; units: number }) =>
+      row.amount * row.units, // amountt debería tener el costo
   },
   {
     field: "paymentMethod",
@@ -166,7 +178,7 @@ function AccountingBoard({ title, location, children, reload }) {
       >
         <DataGrid
           rows={children}
-          columns={location == "ventas" ? columnsCli : columnsSup}
+          columns={location == "ventas" ? columnsOnSell : columnsOnBuy}
           pageSizeOptions={[30, 100]}
           paginationMode="server"
           disableRowSelectionOnClick
@@ -175,7 +187,11 @@ function AccountingBoard({ title, location, children, reload }) {
         />
       </Box>
       {modalState.open && (
-        <MovementModal operation={location} handleClose={handleClose} reload={reload} />
+        <MovementModal
+          operation={location}
+          handleClose={handleClose}
+          reload={reload}
+        />
       )}
     </div>
   );

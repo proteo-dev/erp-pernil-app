@@ -62,7 +62,7 @@ export default function MovementModal({ operation, handleClose, reload }) {
 
     if (status == 201) {
       handleClose();
-      reload()
+      reload();
     } else {
       setAlertModal({ open: true, message: data });
     }
@@ -126,12 +126,21 @@ export default function MovementModal({ operation, handleClose, reload }) {
     let path: string;
     let data = {};
     let query = "";
+    let priceField = "";
+    let queryField = "";
 
-    const field = operation == "ventas" ? "sell" : "buy"; // verifico donde estoy para solicitar productos de ventas o compras
+    // verifico donde estoy para solicitar productos de ventas o compras
+    if (operation == "ventas") {
+      queryField = "sell";
+      priceField = "sellPrice";
+    } else {
+      queryField = "buy";
+      priceField = "cost";
+    }
 
     if (type == "productos") {
       path = state.routes.products;
-      query += `${field}=true`;
+      query += `${queryField}=true`;
       data["ProductId"] = "";
     } else if (type == "ventas") {
       path = state.routes.clients;
@@ -150,8 +159,8 @@ export default function MovementModal({ operation, handleClose, reload }) {
       if (path == state.routes.products)
         data = {
           ProductId: response.data.id,
-          amountPerUnit: Math.round(response.data.sellPrice),
-          amountToPaid: Math.round(response.data.sellPrice),
+          amountPerUnit: Math.round(response.data[priceField]),
+          amountToPaid: Math.round(response.data[priceField]),
         };
       else data = { agentId: response.data.id };
 
@@ -174,7 +183,6 @@ export default function MovementModal({ operation, handleClose, reload }) {
   };
 
   const catchSelectedItem = ({ data, operation }) => {
-
     switch (operation) {
       case "productos":
         setElements((prev) => {

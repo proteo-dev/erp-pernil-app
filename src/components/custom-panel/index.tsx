@@ -2,9 +2,6 @@ import { useContext, useState } from "react";
 import { GlobalContext } from "../../state";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import DeleteIcon from "@mui/icons-material/Delete";
-import IconButton from "@mui/joy/IconButton";
-import Tooltip from "@mui/joy/Tooltip";
 import Box from "@mui/joy/Box";
 import Fab from "@mui/material/Fab";
 import LeftIcon from "@mui/icons-material/KeyboardArrowLeft";
@@ -14,6 +11,7 @@ import InputModal from "../modals/modal";
 import ProductModal from "../modals/product-modal";
 import AgentModal from "../modals/agent";
 import Alert from "../modals/alert";
+import ConfirmDeletionModal from "../modals/confirm";
 
 import "./index.css";
 
@@ -68,7 +66,7 @@ function Panel({ location, title, reload, children = [] }) {
     }
   };
 
-  const deleteItem = async (id) => {
+  const handleDelete = async (id) => {
     const [response, status] = await fetchData({
       path: `${location}/${id}`,
       method: "DELETE",
@@ -107,19 +105,7 @@ function Panel({ location, title, reload, children = [] }) {
             className="card"
           >
             <Box className={"item"}>{el.name}</Box>
-            <Tooltip
-              sx={{ position: "absolute", bottom: 0, right: 1 }}
-              title="Eliminar"
-            >
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  deleteItem(el.id);
-                }}
-              >
-                <DeleteIcon color="error" sx={{ height: "17px" }} />
-              </IconButton>
-            </Tooltip>
+            <ConfirmDeletionModal handleDelete={() => handleDelete(el.id)} />
           </Box>
         ))}
       </div>
