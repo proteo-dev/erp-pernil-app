@@ -35,7 +35,7 @@ export default function InputModal({ location, handleClose }) {
     };
 
     if (location == state.routes.subCategories)
-      inputs["CategoryId"] = categoryId;
+      inputs["CategoryId"] = parseInt(categoryId);
 
     const [data, status] = await fetchData({
       method: "POST",

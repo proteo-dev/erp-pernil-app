@@ -28,7 +28,11 @@ export default function ConfirmDeletionModal({ handleDelete }) {
           <DeleteIcon color="error" sx={{ height: "17px" }} />
         </IconButton>
       </Tooltip>
-      <Modal open={open} onClose={() => setOpen(false)}>
+      <Modal
+        open={open}
+        onClick={(e) => e.stopPropagation()} // evito la propagación para que no se ejecute el evento de customPanel para cambiar de pagina
+        onClose={() => setOpen(false)}
+      >
         <ModalDialog variant="outlined" role="alertdialog">
           <DialogTitle>
             <WarningRoundedIcon />
@@ -42,8 +46,9 @@ export default function ConfirmDeletionModal({ handleDelete }) {
             <Button
               variant="solid"
               color="danger"
-              onClick={() => {
-                handleDelete(); // le tengo que pasar el id
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete();
                 setOpen(false);
               }}
             >
@@ -52,7 +57,10 @@ export default function ConfirmDeletionModal({ handleDelete }) {
             <Button
               variant="plain"
               color="neutral"
-              onClick={() => setOpen(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpen(false);
+              }}
             >
               Cancelar
             </Button>

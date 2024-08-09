@@ -56,7 +56,7 @@ const columnsOnSell = [
     flex: 0.3,
     minWidth: "100px",
     filterable: false,
-    valueGetter: (value: { fullName: string }) => value?.fullName,
+    valueGetter: (value: { fullname: string }) => value?.fullname,
   },
   {
     field: "Client",
@@ -122,7 +122,7 @@ const columnsOnBuy = [
     flex: 0.3,
     minWidth: "100px",
     filterable: false,
-    valueGetter: (value: { fullName: string }) => value?.fullName,
+    valueGetter: (value: { fullname: string }) => value?.fullname,
   },
   {
     field: "Supplier",

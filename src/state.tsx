@@ -3,7 +3,7 @@ import { DB_HOST, API_VERSION } from "./db";
 import React, { createContext, useState } from "react";
 
 import axios from "axios";
-// axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = true;
 
 const apiBaseUrl = `${DB_HOST}/${API_VERSION}/api`;
 
@@ -44,6 +44,9 @@ const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       const { data, status } = error.response;
+
+      if (status == 401 && data.message.includes("No auth token"))
+        location.pathname = "/login";
 
       return [data.message, status];
     }

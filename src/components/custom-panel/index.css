@@ -62,7 +62,7 @@
   cursor: pointer;
 }
 
-.panel .item:hover {
+.panel .card:hover {
   color: steelblue;
 }
 

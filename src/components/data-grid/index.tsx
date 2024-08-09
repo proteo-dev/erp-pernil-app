@@ -35,7 +35,6 @@ const columnsProd = [
     field: "Category",
     headerName: "Categoría",
     flex: 0.3,
-    filterable: false,
     valueGetter: (value: { name: string }) => value?.name,
   },
   {
@@ -43,7 +42,6 @@ const columnsProd = [
     headerName: "Subcategoría",
     flex: 0.3,
     minWidth: "100px",
-    filterable: false,
     valueGetter: (value: { name: string }) => value?.name,
   },
   {
@@ -87,7 +85,7 @@ export default function Grid({ handleSelect, operation }) {
     let path: string;
 
     let query = "";
-    if (filterValue) query = `${filterField}=${filterValue}`; // valido si me llegaron datos de un filtro y construyo la query
+    if (filterValue) query = `${filterField}=${filterValue}&`; // valido si me llegaron datos de un filtro y construyo la query
 
     const field = pathname.includes("ventas") ? "sell" : "buy"; // verifico donde estoy para solicitar productos de ventas o compras
 
@@ -107,7 +105,7 @@ export default function Grid({ handleSelect, operation }) {
 
     const [data, status] = await fetchData({
       path,
-      query: `isActive=true&offset=${offset}&limit=${pageSize}&${query}`,
+      query: `isActive=true&offset=${offset}&${query}`,
     });
 
     if (status == 200) {
@@ -121,8 +119,9 @@ export default function Grid({ handleSelect, operation }) {
     getDataFromDb({});
   }, [paginationModel]);
 
-  const onFilterChange = (e) => {
-    getDataFromDb(e.items[0] || {}); // si no le coloqué un valor al filtro elimina la query
+  const onFilterChange = ({ items }) => {
+    if (items[0].value?.length >= 3) getDataFromDb(items[0]);
+    else if (!items[0].value) getDataFromDb({}); // si NO hay contenido en el fitro, pido todos los productos
   };
 
   return (
