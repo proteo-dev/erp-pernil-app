@@ -46,12 +46,12 @@ export default function MovementModal({ operation, handleClose, reload }) {
       paymentMethod: elements.paymentMethod,
       units: elements.units,
       amount: elements.amountToPaid,
+      ClientId: elements.agentId,
     };
 
     if (isSalesOperation) {
-      inputs["ClientId"] = elements.agentId;
+      inputs["operation"] = "ventas";
     } else {
-      inputs["SupplierId"] = elements.agentId;
       inputs["operation"] = "compras";
     }
 
@@ -107,7 +107,7 @@ export default function MovementModal({ operation, handleClose, reload }) {
         setElements((prev) => {
           return {
             ...prev,
-            units: e.target.value,
+            units: parseInt(e.target.value),
             amountToPaid: Math.round(prev.amountPerUnit * e.target.value),
           };
         });
@@ -275,6 +275,7 @@ export default function MovementModal({ operation, handleClose, reload }) {
                   id="units"
                   name="units"
                   type="number"
+                  required
                   value={elements.units}
                   slotProps={{
                     input: {
