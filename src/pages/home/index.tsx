@@ -10,6 +10,7 @@ function Home() {
   const { state, fetchData } = useContext(GlobalContext);
   const { categoryId, subcategoryId } = useParams();
   const [content, setContent] = useState([]);
+
   const [modalState, setAlertModal] = useState({ open: false, message: "" });
 
   const fullUrl = useLocation().pathname.split("/");

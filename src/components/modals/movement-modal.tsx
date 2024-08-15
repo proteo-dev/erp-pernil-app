@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import Button from "@mui/joy/Button";
 import FormControl from "@mui/joy/FormControl";
@@ -20,6 +21,7 @@ import { GlobalContext } from "../../state";
 export default function MovementModal({ operation, handleClose, reload }) {
   const { fetchData, state } = useContext(GlobalContext);
   const [modalState, setAlertModal] = useState({ open: false, message: "" });
+  const { pathname } = useLocation();
 
   const [elements, setElements] = useState({
     amountPerUnit: 1,
@@ -183,14 +185,16 @@ export default function MovementModal({ operation, handleClose, reload }) {
   };
 
   const catchSelectedItem = ({ data, operation }) => {
+    const field = pathname.includes("ventas") ? "sellPrice" : "cost"; // verifico donde estoy para tomar costo o precio de venta
+
     switch (operation) {
       case "productos":
         setElements((prev) => {
           return {
             ...prev,
             ProductId: data.id,
-            amountPerUnit: data.sellPrice, // tengo que colocar como unidad el costo en compras
-            amountToPaid: data.sellPrice * prev.units,
+            amountPerUnit: data[field],
+            amountToPaid: data[field] * prev.units,
           };
         });
 

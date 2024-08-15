@@ -53,7 +53,7 @@ const columnsProd = [
   },
 ];
 
-const columnsEntity = [
+const columnsAgent = [
   { field: "id", headerName: "Código", flex: 0.2 },
   { field: "name", headerName: "Nombre", flex: 1 },
 ];
@@ -135,7 +135,7 @@ export default function Grid({ handleSelect, operation }) {
       >
         <DataGrid
           rows={data.rows}
-          columns={operation == "productos" ? columnsProd : columnsEntity}
+          columns={operation == "productos" ? columnsProd : columnsAgent}
           pageSizeOptions={[30]}
           paginationModel={paginationModel}
           paginationMode="server"

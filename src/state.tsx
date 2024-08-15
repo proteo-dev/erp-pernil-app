@@ -45,7 +45,7 @@ const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
 
       const { data, status } = error.response;
 
-      if (status == 401 && data.message.includes("No auth token"))
+      if (status == 401 && data.message.includes("Error token"))
         location.pathname = "/login";
 
       return [data.message, status];
